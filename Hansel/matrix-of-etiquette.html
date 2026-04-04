@@ -1,0 +1,252 @@
+<!DOCTYPE html>
+<html lang="en">
+<head><script src="/.nekoweb-api/static/site.js" defer></script><script src="/.nekoweb-api/static/site.js" defer></script>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hans's Gilded Teapot // The Matrix of Etiquette</title>
+    <style>
+        :root {
+            /* Hans's Staple Colors */
+            --velvet: #2d1341; /* Deep Royal Purple */
+            --cornflower: #6495ED; /* Cornflower Blue */
+            --tarnish: #c0a153; /* Tarnished Gold */
+            --dusk: #100818; /* Darkest Background */
+            --paper: #e7dcc8; /* Aged, Sophisticated Text */
+        }
+
+        body {
+            background-color: var(--dusk);
+            color: var(--paper);
+            font-family: 'Garamond', 'Georgia', serif; /* Sophisticated serif */
+            margin: 0; padding: 0;
+            display: flex; flex-direction: column; align-items: center; justify-content: center;
+            min-height: 100vh;
+        }
+
+        /* --- Intro Overlay (Hans's Standoffish Start) --- */
+        #introOverlay {
+            position: fixed; inset: 0; background: rgba(0,0,0,0.95);
+            display: flex; align-items: center; justify-content: center; z-index: 500;
+            backdrop-filter: blur(8px);
+        }
+        .intro-card {
+            background: var(--velvet); border: 2px solid var(--tarnish);
+            padding: 40px; border-radius: 20px; max-width: 450px; text-align: center;
+            box-shadow: 0 0 30px rgba(192, 161, 83, 0.2);
+        }
+        .hans-avatar {
+            width: 140px; height: 140px; border-radius: 50%;
+            border: 3px solid var(--cornflower); margin: 0 auto 20px;
+            object-fit: cover; display: block;
+            filter: sepia(40%) contrast(110%); /* Aged/Redeemed look */
+        }
+        .btn-main { 
+            background: var(--tarnish); color: var(--dusk); padding: 12px 25px; border: none; 
+            border-radius: 10px; font-weight: bold; cursor: pointer; text-transform: uppercase;
+            font-family: 'Garamond', serif; letter-spacing: 2px;
+        }
+
+        /* --- Main Study View --- */
+        #hans-study {
+            display: grid; grid-template-columns: 280px 1fr; gap: 30px; 
+            width: 90%; max-width: 1200px; padding: 20px;
+        }
+
+        /* Side Panel (Knowledge & Etiquette Score) */
+        .panel-side { 
+            background: rgba(45, 19, 65, 0.7); 
+            border-right: 3px solid var(--cornflower); 
+            padding: 20px; text-align: center;
+        }
+        .panel-side h3 { color: var(--tarnish); border-bottom: 1px solid var(--tarnish); padding-bottom: 10px; }
+        #hansSpeech { font-style: italic; color: #ccc; margin-top: 20px; font-size: 1rem; line-height: 1.5; }
+        
+        #scoreDisplay { 
+            margin-top: 50px; font-size: 0.8rem; color: var(--tarnish); 
+            text-transform: uppercase; letter-spacing: 2px;
+        }
+
+        /* Main Workspace (The Ritual Area) */
+        .panel-main { 
+            display: grid; grid-template-rows: auto 1fr; gap: 20px; 
+            background: rgba(255,255,255,0.03); padding: 20px; border-radius: 15px;
+        }
+
+        .study-header { color: var(--cornflower); letter-spacing: 4px; border-bottom: 1px dashed rgba(100,149,237,0.3); padding-bottom: 10px; }
+
+        .ritual-matrix {
+            display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 20px; align-items: start;
+        }
+
+        /* Etiquette Stage (Button & Info) */
+        .etiquette-stage {
+            background: rgba(0,0,0,0.4); border: 1px solid rgba(192, 161, 83, 0.2);
+            border-radius: 10px; padding: 15px; text-align: center;
+            transition: all 0.3s;
+        }
+        .etiquette-stage:hover { border-color: var(--tarnish); box-shadow: 0 0 15px rgba(192, 161, 83, 0.3); }
+        .stage-btn {
+            background: var(--velvet); color: var(--paper); border: 1px solid var(--cornflower);
+            padding: 10px; border-radius: 5px; cursor: pointer; width: 100%; margin-top: 10px;
+            font-family: 'Garamond', serif; font-size: 1rem; text-transform: uppercase;
+        }
+        .stage-btn:hover { background: var(--cornflower); color: #000; }
+        
+        .stage-info { font-size: 0.9rem; color: #ccc; margin-top: 10px; text-align: left; }
+        .stage-icon { font-size: 2rem; color: var(--tarnish); }
+
+        /* Status & Brewing Progress */
+        #etiquette-status {
+            grid-column: 1 / -1; background: rgba(100,149,237, 0.1); 
+            padding: 20px; border-radius: 10px; text-align: center; font-family: monospace;
+            border: 1px dashed var(--cornflower); color: var(--paper);
+        }
+    </style>
+</head>
+<body>
+
+<div id="introOverlay">
+    <div class="intro-card">
+        <img src="hans-sus.jpeg" alt="Hans" class="hans-avatar">
+        
+        <h2 style="color:var(--tarnish); letter-spacing:4px; text-transform:uppercase;">The Gilded Teapot</h2>
+        <p>"...Another apprentice? I see Miki has opened the floodgates. Well. *'There is nothing either good or bad, but thinking makes it so.'* ...Let us see if your mind is capable of *thinking* about more than just instant gratification. This study values etiquette above all else. Shall we begin?"</p>
+        
+        <button class="btn-main" onclick="startApprenticeship()">Proceed, with Caution</button>
+    </div>
+</div>
+
+<div id="hans-study">
+    
+    <aside class="panel-side">
+        <h3>Master of Etiquette</h3>
+        <p id="hansSpeech">
+            Hans observes you... "We will begin with the foundations. Do not approach the teapot until I deem you ready."
+        </p>
+        
+        <p id="scoreDisplay">ETIQUETTE PROTOCOL: 0/3 ACCOMPLISHED</p>
+    </aside>
+
+    <main class="panel-main">
+        <h1 class="study-header">THE MATRIX OF ETIQUETTE</h1>
+        
+        <div class="ritual-matrix">
+            
+            <div class="etiquette-stage" id="stage1">
+                <div class="stage-icon">🤝</div>
+                <div class="stage-info">
+                    <strong>1. The Initial Greeting</strong>
+                    <p>Approach with dignity. Do not offer your hand. A respectful nod is sufficient. Etiquette is the armor of civilized society.</p>
+                </div>
+                <button class="stage-btn" onclick="performRitual(1)">Acknowledge the Master</button>
+            </div>
+
+            <div class="etiquette-stage" id="stage2" style="opacity:0.4;">
+                <div class="stage-icon">💧</div>
+                <div class="stage-info">
+                    <strong>2. The Infusion Protocol</strong>
+                    <p>Water must be at 100°C. *'To be, or not to be'* (properly steeped), that is the question. The Earl Grey must breathe before it is poured.</p>
+                </div>
+                <button class="stage-btn" onclick="performRitual(2)" disabled id="btn2">Prepare the Infusion</button>
+            </div>
+
+            <div class="etiquette-stage" id="stage3" style="opacity:0.4;">
+                <div class="stage-icon">☕</div>
+                <div class="stage-info">
+                    <strong>3. The Libation Commandment</strong>
+                    <p>Pour the tea from the spout, not the lid. Use the sugar tongs—do not be uncivilized. The libation is a performance, not a chore.</p>
+                </div>
+                <button class="stage-btn" onclick="performRitual(3)" disabled id="btn3">Execute the Libation</button>
+            </div>
+
+            <div id="etiquette-status">
+                <p>> SYSTEM STATUS: STANDBY // NO APPRENTICE REGISTERED</p>
+            </div>
+
+        </div>
+    </main>
+
+</div>
+
+<script>
+    let state = { stage: 0 };
+
+    // Quotes for specific successes
+    const victoryQuotes = {
+        1: "Hans: Hmm. A passable nod. Perhaps there is hope.",
+        2: "Hans: (He sniffs the air) ...*’O, for a muse of fire’* that could brew this efficiently. The steeping process is correct.",
+        3: "Hans: (He watches you pour) Correct spout technique, use of tongs. This... this is acceptable. The Matrix of Etiquette is established."
+    }
+
+    // A Shakespearean insult for if they mess up or hurry
+    const insult = "Hans: You approach etiquette with the grace of a *'cream-faced loon!'* Recalibrate and begin the Infusion again.";
+
+    function startApprenticeship() {
+        // Vibrate/Click logic would go here
+        document.getElementById('introOverlay').style.opacity = "0";
+        setTimeout(() => {
+            document.getElementById('introOverlay').style.display = "none";
+            document.getElementById('etiquette-status').innerText = "> SYSTEM STATUS: APPRENTICE REGISTERED // MATRIX ACTIVE";
+        }, 800);
+    }
+
+    function performRitual(stageNumber) {
+        if(state.stage !== stageNumber - 1) {
+            document.getElementById('etiquette-status').innerText = `> ERROR: PROTOCOL BREAK. ${insult}`;
+            return;
+        }
+
+        const currentStage = document.getElementById(`stage${stageNumber}`);
+        const statusBox = document.getElementById('etiquette-status');
+
+        if(stageNumber === 1) {
+            state.stage = 1;
+            statusBox.innerText = "> PROTOCOL 1 COMPLETE: INITIAL GREETING REGISTERED.";
+            // Unlock next stage
+            document.getElementById('stage2').style.opacity = "1";
+            document.getElementById('btn2').disabled = false;
+        } else if(stageNumber === 2) {
+            state.stage = 2;
+            statusBox.innerText = "> PROTOCOL 2 COMPLETE: INFUSION PROTOCOL ACTIVE (Masala Steeped).";
+            // Unlock final stage
+            document.getElementById('stage3').style.opacity = "1";
+            document.getElementById('btn3').disabled = false;
+        } else if(stageNumber === 3) {
+            state.stage = 3;
+            statusBox.innerText = "> PROTOCOL 3 COMPLETE: LIBATION COMMANDMENT EXECUTED. RITUAL IS ACCOMPLISHED.";
+        }
+
+        // Update Hans's Speech and Score
+        document.getElementById('hansSpeech').innerText = victoryQuotes[stageNumber];
+        document.getElementById('scoreDisplay').innerText = `ETIQUETTE PROTOCOL: ${state.stage}/3 ACCOMPLISHED`;
+    }
+        
+        // Final Success State
+        if (state.stage === 3) {
+            currentStage.style.borderColor = "var(--cornflower)";
+            statusBox.style.color = "var(--cornflower)";
+            statusBox.style.boxShadow = "0 0 25px rgba(192, 161, 83, 0.6)";
+            
+            // Hans's Final Word
+            setTimeout(() => {
+                document.getElementById('hansSpeech').innerHTML = 
+                    "Hans: *'Parting is such sweet sorrow,'* though in your case, it is mostly a relief for my carpet. You have the coordination of a fledgling, but the spirit of a scholar. Go. Do not squander this refinement in the chaos of the next realm.";
+                
+                // Reveal the External Link
+                statusBox.innerHTML = `
+                    <div style="animation: glitch 0.3s infinite;">
+                        <p>> RITUAL VERIFIED // ETIQUETTE THRESHOLD CROSSED</p>
+                        <a href="https://your-next-event-link.com" 
+                           style="color: var(--tarnish); text-decoration: none; font-weight: bold; font-size: 1.2rem;">
+                           [ → EXIT TO THE NEXT ARCHIVE ]
+                        </a>
+                    </div>
+                `;
+            }, 1500);
+      
+        }
+  
+</script>
+
+</body>
+</html>
