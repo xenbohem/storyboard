@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html lang="en">
+<head><script src="/.nekoweb-api/static/site.js" defer></script>
+    <meta charset="UTF-8">
+    <title>Hans's Gilded Teapot // The Time-Lock Archive</title>
+    <style>
+        :root {
+            --velvet: #2d1341;
+            --cornflower: #6495ED;
+            --tarnish: #c0a153;
+            --dusk: #100818;
+            --paper: #e7dcc8;
+        }
+
+        body {
+            background-color: var(--dusk);
+            color: var(--paper);
+            font-family: 'Garamond', serif;
+            margin: 0; display: flex; align-items: center; justify-content: center;
+            min-height: 100vh; overflow-x: hidden;
+        }
+
+        /* --- UI Panels --- */
+        #hans-study {
+            display: grid; grid-template-columns: 300px 1fr; gap: 30px; 
+            width: 90%; max-width: 1100px; padding: 20px;
+        }
+
+        .panel-side { background: rgba(45, 19, 65, 0.8); border: 2px solid var(--tarnish); padding: 20px; border-radius: 15px; text-align: center; }
+        
+        .hans-avatar {
+            width: 150px; height: 150px; border-radius: 50%;
+            border: 3px solid var(--cornflower); margin-bottom: 15px;
+            object-fit: cover; transition: all 0.5s;
+        }
+
+        .panel-main { background: rgba(255,255,255,0.03); padding: 30px; border-radius: 20px; border: 1px solid rgba(100,149,237,0.2); }
+
+        .btn-action {
+            background: var(--velvet); color: var(--paper); border: 1px solid var(--tarnish);
+            padding: 12px; border-radius: 8px; cursor: pointer; width: 100%;
+            font-family: 'Garamond', serif; text-transform: uppercase; letter-spacing: 1px;
+            margin-top: 15px;
+        }
+
+        .btn-action:disabled { opacity: 0.3; cursor: not-allowed; }
+        .btn-action:hover:not(:disabled) { background: var(--tarnish); color: var(--dusk); }
+
+        #etiquette-status {
+            margin-top: 20px; padding: 15px; border: 1px dashed var(--cornflower);
+            background: rgba(0,0,0,0.5); font-family: monospace; font-size: 0.9rem;
+        }
+
+        /* --- Intro Overlay --- */
+        #introOverlay {
+            position: fixed; inset: 0; background: #000; z-index: 1000;
+            display: flex; align-items: center; justify-content: center; transition: 0.8s;
+        }
+
+        .hidden { display: none !important; }
+        .fade-out { opacity: 0; pointer-events: none; }
+    </style>
+</head>
+<body>
+
+<div id="introOverlay">
+    <div style="text-align:center; max-width: 500px; padding: 20px;">
+        <img src="hans-sus.jpeg" id="introAvatar" class="hans-avatar">
+        <h2 style="color:var(--tarnish)">THE GILDED TEAPOT</h2>
+        <p id="introText">"So. You seek the secrets of the Black Leaf? Do not spill a drop on my rug."</p>
+        <button class="btn-action" onclick="enterStudy()">Enter the Study</button>
+    </div>
+</div>
+
+<div id="hans-study" class="hidden">
+    <aside class="panel-side">
+        <img src="hansvampirefangsteasnob.jpeg" id="mainAvatar" class="hans-avatar">
+        <h3 id="hansName">Master Hans</h3>
+        <p id="hansSpeech">"The clock is ticking, apprentice. Propriety waits for no one."</p>
+    </aside>
+
+    <main class="panel-main">
+        <h1 style="color:var(--cornflower); border-bottom: 1px solid var(--cornflower)">Etiquette Assessment</h1>
+        
+        <div id="ritual-zone">
+            <p>Protocol: Complete the tea ceremony to set your appointment.</p>
+            <button class="btn-action" id="ritualBtn" onclick="completeCeremony()">Perform The Three-Fold Pour</button>
+        </div>
+
+        <div id="etiquette-status">
+            STATUS: WAITING FOR CEREMONY...
+        </div>
+
+        <div id="reward-zone" class="hidden">
+            <h4 style="color:var(--tarnish)">[ THE ETIQUETTE BALLAD ]</h4>
+            <p style="font-size: 0.8rem; font-style: italic;">"A harpsichord melody plays..."</p>
+            <div style="background:#222; padding:10px; border:1px solid var(--cornflower)">
+                [ MUSIC PLAYER ACTIVE ]
+            </div>
+        </div>
+    </main>
+</div>
+
+<script>
+    const state = { ritualDone: false };
+
+    // Set Hans's Avatar paths here
+    const images = {
+        sus: "hans_sus.jpg",
+        standard: "hans_standard.jpg",
+        grumpy: "hans_nightcap.jpg" // The 24h image
+    };
+
+    function enterStudy() {
+        document.getElementById('introOverlay').classList.add('fade-out');
+        setTimeout(() => {
+            document.getElementById('introOverlay').classList.add('hidden');
+            document.getElementById('hans-study').classList.remove('hidden');
+            checkExistingAppointment();
+        }, 800);
+    }
+
+    function completeCeremony() {
+        state.ritualDone = true;
+        const now = new Date().getTime();
+        localStorage.setItem('hans_tea_time', now);
+        
+        document.getElementById('ritualBtn').disabled = true;
+        document.getElementById('hansSpeech').innerText = "Hans: Precisely. Now, leave. Return in exactly ONE HOUR. If you are late, the consequences will be... steep.";
+        document.getElementById('etiquette-status').innerHTML = "APPOINTMENT SET. <br>Return in 60 minutes to claim your reward.";
+        
+        // Add a 'check return' button that only appears after they've set the time
+        const checkBtn = document.createElement('button');
+        checkBtn.className = "btn-action";
+        checkBtn.innerText = "Attempt to Return";
+        checkBtn.onclick = checkReturn;
+        document.getElementById('ritual-zone').appendChild(checkBtn);
+    }
+
+    function checkReturn() {
+        const startTime = localStorage.getItem('hans_tea_time');
+        if (!startTime) return;
+
+        const now = new Date().getTime();
+        const diffMs = now - startTime;
+        const diffMins = diffMs / (1000 * 60);
+        const diffHours = diffMins / 60;
+
+        const speech = document.getElementById('hansSpeech');
+        const status = document.getElementById('etiquette-status');
+        const avatar = document.getElementById('mainAvatar');
+
+        if (diffHours >= 24) {
+            // THE 24 HOUR GRUMPY STATE
+            avatar.src = images.grumpy;
+            speech.innerText = "Hans: (Yawning in a velvet nightcap) A full day late? I have finished three novels and composed a dirge while waiting. The tea has turned to vinegar. Be gone, you slothful creature!";
+            status.innerHTML = "ETIQUETTE FAILURE: Hans is too tired to deal with you.";
+        } 
+        else if (diffMins >= 55 && diffMins <= 75) {
+            // PUNCTUAL SUCCESS
+            speech.innerText = "Hans: Remarkable. You have a sense of timing that rivals my own. As promised, a reward for the refined.";
+            document.getElementById('reward-zone').classList.remove('hidden');
+            status.innerHTML = "PROTOCOL MET: Punctuality verified.";
+        } 
+        else if (diffMins < 55) {
+            // TOO EARLY
+            speech.innerText = "Hans: You are early. Eagerness is just a polite word for impatience. Come back when the clock strikes the hour.";
+            status.innerHTML = `TOO EARLY. Wait another ${Math.ceil(60 - diffMins)} minutes.`;
+        } 
+        else {
+            // LATE BUT NOT 24H LATE
+            speech.innerText = "Hans: You are late. The Earl Grey is cold, and my patience is thinner than a cheap saucer. You must beg for a re-steep.";
+            status.innerHTML = "LATE. Ritual invalidated.";
+            // Allow them to reset
+            localStorage.removeItem('hans_tea_time');
+            document.getElementById('ritualBtn').disabled = false;
+        }
+    }
+
+    function checkExistingAppointment() {
+        if(localStorage.getItem('hans_tea_time')) {
+            document.getElementById('ritualBtn').disabled = true;
+            document.getElementById('etiquette-status').innerHTML = "You have an active appointment. Attempt a return.";
+            const checkBtn = document.createElement('button');
+            checkBtn.className = "btn-action";
+            checkBtn.innerText = "Attempt to Return";
+            checkBtn.onclick = checkReturn;
+            document.getElementById('ritual-zone').appendChild(checkBtn);
+        }
+    }
+</script>
+
+</body>
+</html>
