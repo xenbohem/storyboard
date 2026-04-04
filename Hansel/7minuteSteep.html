@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Archive_H // The Gilded Teapot</title>
+    <style>
+        :root {
+            --miki-cyan: #00f2ff;
+            --miki-magenta: #ff00ff;
+            --velvet: #2d1341;
+            --cornflower: #6495ED;
+            --tarnish: #c0a153;
+            --dusk: #100818;
+            --paper: #e7dcc8;
+        }
+
+        body {
+            background-color: #000;
+            margin: 0; overflow: hidden;
+            display: flex; align-items: center; justify-content: center;
+            min-height: 100vh; color: var(--paper);
+            font-family: 'Garamond', serif;
+        }
+
+        .hidden { display: none !important; }
+
+        /* --- MIKI TERMINAL --- */
+        #miki-terminal {
+            width: 80%; max-width: 700px; padding: 30px;
+            border: 1px solid var(--miki-cyan); background: rgba(0,0,0,0.9);
+            box-shadow: 0 0 20px var(--miki-cyan);
+            font-family: monospace; color: var(--miki-cyan);
+        }
+
+        .btn-miki {
+            background: transparent; color: var(--miki-magenta);
+            border: 1px solid var(--miki-magenta); padding: 10px 20px;
+            cursor: pointer; margin-top: 20px; font-family: monospace;
+        }
+
+        /* --- HANS REALM --- */
+        #hans-realm {
+            display: grid; grid-template-columns: 320px 1fr; gap: 40px;
+            width: 90%; max-width: 1100px; padding: 40px;
+            background: var(--dusk); border: 2px solid var(--tarnish);
+            border-radius: 20px; box-shadow: 0 0 50px rgba(0,0,0,0.8);
+        }
+
+        .hans-avatar {
+            width: 180px; height: 180px; border-radius: 50%;
+            border: 4px solid var(--cornflower); margin-bottom: 20px;
+            object-fit: cover; box-shadow: 0 0 20px rgba(100, 149, 237, 0.3);
+        }
+
+        .btn-hans {
+            background: var(--velvet); color: var(--paper); border: 1px solid var(--tarnish);
+            padding: 15px; width: 100%; border-radius: 5px; cursor: pointer;
+            text-transform: uppercase; letter-spacing: 2px; font-family: 'Garamond', serif;
+            transition: 0.3s; margin-top: 15px;
+        }
+        .btn-hans:hover:not(:disabled) { background: var(--tarnish); color: var(--dusk); }
+
+        #status-ticker {
+            margin-top: 20px; padding: 12px; border: 1px solid var(--cornflower);
+            background: #000; font-family: monospace; font-size: 0.8rem; color: var(--cornflower);
+        }
+
+        /* --- TUNNEL EFFECT --- */
+        #bridge-overlay {
+            position: fixed; inset: 0; background: #000; z-index: 9999;
+            display: flex; align-items: center; justify-content: center;
+            opacity: 0; pointer-events: none; transition: 2s;
+        }
+    </style>
+</head>
+<body>
+
+<div id="miki-terminal">
+    <h2>> MIKI_LOG: TUNNEL_INIT</h2>
+    <p>> "Accessing Archive_H... I hope you like velvet and disappointment."</p>
+    <button class="btn-miki" onclick="initiateTunnel()">[ BRIDGE TO TEAPOT ]</button>
+</div>
+
+<div id="bridge-overlay">
+    <h1 id="bridge-text" style="color:var(--miki-cyan); font-family:monospace;">> TUNNELING...</h1>
+</div>
+
+<div id="hans-realm" class="hidden">
+    <aside style="text-align:center; border-right: 1px dashed var(--tarnish); padding-right:30px;">
+        <img src="hans_standard.jpg" id="hansImg" class="hans-avatar">
+        <h3 style="color:var(--tarnish); letter-spacing: 3px;">HANS</h3>
+        <p id="hansSpeech">"Miki’s discard has arrived. Do try to be useful."</p>
+    </aside>
+
+    <main>
+        <h1 style="color:var(--cornflower); margin-top: 0;">The Ritual of the Black Leaf</h1>
+        
+        <div id="ritual-zone">
+            <p>Perform the 3-Fold Pour. Return in 7 Minutes for the infusion check.</p>
+            <button class="btn-hans" id="actionBtn" onclick="startHansRitual()">Execute Ceremony</button>
+        </div>
+        
+        <div id="status-ticker">> PROTOCOL_IDLE // AWAITING APPRENTICE</div>
+
+        <div id="reward-zone" class="hidden" style="margin-top:30px; border-top:1px solid var(--tarnish); padding-top:20px;">
+            <h3 style="color:var(--tarnish)">Unlocked: The Etiquette Ballad</h3>
+            <audio id="teaSong" controls style="width: 100%; margin-bottom: 10px;">
+                <source src="https://xenbohem.github.io/storyboard/Hansel/teasnobsong.mp3" type="audio/mpeg">
+            </audio>
+            <p style="font-size: 0.85rem; font-style: italic; color: var(--paper); line-height: 1.4;">
+                "Observe the cup, a porcelain sky...<br>
+                Six to twelve, the spoon must glide..."
+            </p>
+        </div>
+    </main>
+</div>
+
+<script>
+    // --- BRIDGE ANIMATION ---
+    function initiateTunnel() {
+        const overlay = document.getElementById('bridge-overlay');
+        overlay.style.pointerEvents = "all";
+        overlay.style.opacity = "1";
+
+        setTimeout(() => {
+            overlay.style.background = "#2d1341"; // Fade to Hans's Purple
+            document.getElementById('bridge-text').innerHTML = "<span style='color:var(--cornflower); font-family:serif;'>'The rest is silence...'</span>";
+        }, 2000);
+
+        setTimeout(() => {
+            document.getElementById('miki-terminal').classList.add('hidden');
+            document.getElementById('hans-realm').classList.remove('hidden');
+            overlay.style.opacity = "0";
+            overlay.style.pointerEvents = "none";
+            checkState();
+        }, 4500);
+    }
+
+    // --- HANS LOGIC ---
+    const TEST_TIME_MINS = 7; // Set back to 60 for production
+    const IMAGES = { standard: "hans_standard.jpg", grumpy: "hans_nightcap.jpg" };
+
+    function startHansRitual() {
+        const now = new Date().getTime();
+        localStorage.setItem('hans_tea_start', now);
+        document.getElementById('hansSpeech').innerText = "Hans: Precisely. Now, leave. Return in " + TEST_TIME_MINS + " minutes. If you are late, the consequences will be... steep.";
+        updateUI();
+    }
+
+    function updateUI() {
+        document.getElementById('ritual-zone').innerHTML = `
+            <p style="color:var(--tarnish); font-style:italic;">[ APPOINTMENT LOGGED ]</p>
+            <button class="btn-hans" onclick="verifyReturn()">Check The Pocket Watch</button>
+            <button class="btn-miki" style="font-size:10px; border:none;" onclick="localStorage.clear(); location.reload();">DEV: RESET CLOCK</button>
+        `;
+        document.getElementById('status-ticker').innerText = "> STATUS: AWAITING INFUSION (Window: " + TEST_TIME_MINS + "m)";
+    }
+
+    function verifyReturn() {
+        const startTime = localStorage.getItem('hans_tea_start');
+        if(!startTime) return;
+
+        const now = new Date().getTime();
+        const diffMins = (now - startTime) / 1000 / 60;
+        const diffHours = diffMins / 60;
+
+        const speech = document.getElementById('hansSpeech');
+        const img = document.getElementById('hansImg');
+        const ticker = document.getElementById('status-ticker');
+
+        if (diffHours >= 24) {
+            img.src = IMAGES.grumpy;
+            speech.innerText = "Hans: (Adjusting his nightcap) A full day? I have finished a trilogy of sonnets while waiting. The tea is now a biological hazard. Be gone!";
+            ticker.innerText = "> STATUS: CRITICAL FAILURE";
+        } 
+        else if (diffMins >= TEST_TIME_MINS && diffMins <= (TEST_TIME_MINS + 5)) {
+            speech.innerText = "Hans: Punctuality. Rare indeed. Here is the ballad you were promised. Do try not to hum along too loudly.";
+            ticker.innerText = "> STATUS: SUCCESS // MUSIC UNLOCKED";
+            document.getElementById('reward-zone').classList.remove('hidden');
+            document.getElementById('teaSong').play();
+        } 
+        else if (diffMins < TEST_TIME_MINS) {
+            speech.innerText = "Hans: You return already? Eagerness is a polite word for impatience. Return when the clock strikes the hour.";
+            ticker.innerText = "> STATUS: PREMATURE // WAIT LONGER";
+        } 
+        else {
+            speech.innerText = "Hans: Late. The Earl Grey is cold and ruined. Much like your future here. Try again.";
+            ticker.innerText = "> STATUS: LATE // RE-STEEP REQUIRED";
+            localStorage.removeItem('hans_tea_start');
+            setTimeout(() => { location.reload(); }, 4000);
+        }
+    }
+
+    function checkState() {
+        if(localStorage.getItem('hans_tea_start')) { updateUI(); }
+    }
+</script>
+
+</body>
+</html>
