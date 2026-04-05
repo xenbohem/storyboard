@@ -1,8 +1,8 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
+<head><script src="/.nekoweb-api/static/site.js" defer></script>
     <meta charset="UTF-8">
-    <title>CHIMERA ESCAPE // The Final Cut</title>
+    <title>CHIMERA ESCAPE // The Master Sequence</title>
     <style>
         :root {
             --gold: #c0a153;
@@ -15,44 +15,38 @@
             color: #fff; overflow: hidden; font-family: 'Garamond', serif; 
         }
 
-        /* Stage Styling */
         .stage {
             position: fixed; inset: 0; display: none;
-            flex-direction: column; align-items: center; justify-content: center;
-            z-index: 10;
+            align-items: center; justify-content: center;
+            flex-direction: column;
         }
 
-        /* --- STAGE 1: THE START TRIGGER --- */
-        #stage-start { 
-            display: flex; z-index: 100; cursor: pointer; 
-            background: #000;
-        }
-        .start-logo {
+        /* --- STAGE 1: LOGO FLASH --- */
+        #stage-logo { display: flex; z-index: 100; }
+        .logo-text {
             font-size: clamp(2rem, 8vw, 5rem); letter-spacing: 15px; font-weight: bold;
-            pointer-events: none; /* Let the click pass to the div */
+            opacity: 0; animation: logoAnimation 6s forwards;
         }
-        .pulse { animation: pulseAnim 3s infinite; }
-        @keyframes pulseAnim { 0%, 100% { opacity: 0.3; } 50% { opacity: 1; text-shadow: 0 0 30px #fff; } }
-
-        /* --- STAGE 2: MOVIE PREVIEW --- */
-        #stage-video { z-index: 90; background: #000; }
-        #stage-video::before, #stage-video::after {
-            content: ''; position: absolute; left: 0; right: 0;
-            height: 15vh; background: #000; z-index: 91;
+        @keyframes logoAnimation {
+            0% { opacity: 0; filter: blur(10px); }
+            30% { opacity: 1; filter: blur(0px); text-shadow: 0 0 20px #fff; }
+            70% { opacity: 1; filter: blur(0px); }
+            100% { opacity: 0; filter: blur(20px); }
         }
-        #stage-video::before { top: 0; }
-        #stage-video::after { bottom: 0; }
-        video { width: 100%; max-height: 70vh; object-fit: cover; }
 
-        /* --- STAGE 3: THE CLEAN CRAWL --- */
+        /* --- STAGE 2: THE CLEAN CRAWL --- */
         #stage-crawl { z-index: 50; perspective: 450px; }
         .crawl-wrapper {
-            position: absolute; width: 65%; top: 100%; text-align: center;
+            position: absolute; width: 65%;
+            top: 100%; text-align: center;
             transform: rotateX(25deg);
         }
         .crawl-content { color: var(--gold); font-size: 2.2rem; line-height: 2; }
         .animate-crawl { animation: crawlMovement 38s linear forwards; }
-        @keyframes crawlMovement { 0% { top: 100%; } 100% { top: -200%; } }
+        @keyframes crawlMovement {
+            0% { top: 100%; }
+            100% { top: -180%; }
+        }
 
         /* --- STAGE 4: THE MAP --- */
         #stage-map { 
@@ -67,30 +61,25 @@
         }
         .map-node:hover { border-color: var(--gold); background: rgba(192, 161, 83, 0.05); }
 
-        /* --- SYNOPSIS --- */
+        /* --- SYNOPSIS OVERLAY --- */
         #synopsis {
             position: fixed; inset: 0; background: rgba(0,0,0,0.95);
             display: none; align-items: center; justify-content: center; z-index: 200;
         }
-        .card { border: 1px solid var(--gold); padding: 40px; max-width: 500px; text-align: center; background: #000; }
-        .btn { background: none; border: 1px solid var(--gold); color: #fff; padding: 10px 25px; cursor: pointer; margin-top: 20px; font-family: 'Garamond'; }
+        .card {
+            border: 1px solid var(--gold); padding: 40px; max-width: 500px;
+            text-align: center; background: #000;
+        }
+        .btn {
+            background: none; border: 1px solid var(--gold); color: #fff;
+            padding: 10px 25px; cursor: pointer; margin-top: 20px; font-family: 'Garamond';
+        }
     </style>
 </head>
 <body>
 
-    <audio id="mainTheme" loop>
-        <source src="TrueValentine.mp3" type="audio/mpeg">
-    </audio>
-
-    <div id="stage-start" class="stage">
-        <h1 class="start-logo pulse">CHIMERA ESCAPE</h1>
-        <p style="letter-spacing: 5px; font-size: 0.8rem; margin-top: 20px; opacity: 0.5;">[ CLICK TO BEGIN ]</p>
-    </div>
-
-    <div id="stage-video" class="stage">
-        <video id="previewVideo" playsinline>
-            <source src="prequel-video.mp4" type="video/mp4">
-        </video>
+    <div id="stage-logo" class="stage">
+        <h1 class="logo-text">CHIMERA ESCAPE</h1>
     </div>
 
     <div id="stage-crawl" class="stage">
@@ -128,87 +117,51 @@
     </div>
 
     <script>
-    const startStage = document.getElementById('stage-start');
-    const videoStage = document.getElementById('stage-video');
-    const crawlStage = document.getElementById('stage-crawl');
-    const mapStage = document.getElementById('stage-map');
-    
-    const video = document.getElementById('previewVideo');
-    const theme = document.getElementById('mainTheme');
-    const crawler = document.getElementById('crawler');
+        const stages = {
+            logo: document.getElementById('stage-logo'),
+            crawl: document.getElementById('stage-crawl'),
+            map: document.getElementById('stage-map')
+        };
 
-    let sequenceStarted = false;
+        const charInfo = {
+            miki: { title: "MIKI", text: "Chaotic. Brilliant. Fast. Miki weaves the neon streams of the new world. Are you fast enough to follow?", link: "miki.html", color: "var(--miki)" },
+            hans: { title: "HANS", text: "Refined. Patient. Punctual. Hans guards the etiquette of the old world. Do you have the discipline to wait?", link: "hans.html", color: "var(--hans)" }
+        };
 
-    // --- THE MASTER TRIGGER FUNCTION ---
-    function startSequence() {
-        if (sequenceStarted) return; // Prevent double-triggering
-        sequenceStarted = true;
-        
-        console.log("Sequence Started (User or Auto)");
-
-        // 1. Play Theme Music
-        theme.play().catch(e => console.log("Audio waiting for interaction..."));
-
-        // 2. Transition Stages
-        startStage.style.opacity = '0';
-        setTimeout(() => {
-            startStage.style.display = 'none';
-            videoStage.style.display = 'flex';
-            
-            // 3. Play Video with Fallback
-            video.play()
-                .then(() => console.log("Video playing..."))
-                .catch(err => {
-                    console.log("Video error/missing, skipping to crawl.");
-                    startCrawl();
-                });
-        }, 1000);
-    }
-
-    // --- 5 SECOND AUTO-START TIMER ---
-    const autoTimer = setTimeout(() => {
-        if (!sequenceStarted) {
-            console.log("Auto-starting after 5 seconds...");
-            startSequence();
-        }
-    }, 5000);
-
-    // --- CLICK LISTENER ---
-    startStage.addEventListener('click', () => {
-        clearTimeout(autoTimer); // Stop the timer if they click early
-        startSequence();
-    });
-
-    // --- VIDEO ENDED LOGIC ---
-    video.onended = () => {
-        startCrawl();
-    };
-
-    function startCrawl() {
-        videoStage.style.display = 'none';
-        crawlStage.style.display = 'flex';
-        crawler.classList.add('animate-crawl');
-        
-        // Move to Map after the crawl finishes (35 seconds)
-        setTimeout(() => {
-            crawlStage.style.opacity = '0';
+        window.onload = () => {
+            // Stage 1 -> 2
             setTimeout(() => {
-                crawlStage.style.display = 'none';
-                mapStage.style.display = 'grid';
-                setTimeout(() => mapStage.style.opacity = '1', 100);
-            }, 2000);
-        }, 38000);
-    }
+                stages.logo.style.display = 'none';
+                stages.crawl.style.display = 'flex';
+                document.getElementById('crawler').classList.add('animate-crawl');
+            }, 6000);
 
-    // --- DEV SKIP ---
-    window.addEventListener('dblclick', () => {
-        clearTimeout(autoTimer);
-        startStage.style.display = 'none';
-        videoStage.style.display = 'none';
-        crawlStage.style.display = 'none';
-        mapStage.style.display = 'grid';
-        mapStage.style.opacity = '1';
-    });
-</script>
+            // Stage 2 -> 3 (Map)
+            setTimeout(() => {
+                stages.crawl.style.display = 'none';
+                stages.map.style.display = 'grid';
+                setTimeout(() => stages.map.style.opacity = '1', 100);
+            }, 42000); 
+        };
+
+        function openSyn(char) {
+            const data = charInfo[char];
+            document.getElementById('syn-title').innerText = data.title;
+            document.getElementById('syn-title').style.color = data.color;
+            document.getElementById('syn-text').innerText = data.text;
+            document.getElementById('start-btn').onclick = () => window.location.href = data.link;
+            document.getElementById('synopsis').style.display = 'flex';
+        }
+
+        function closeSyn() { document.getElementById('synopsis').style.display = 'none'; }
+
+        // Double click to skip to map
+        window.ondblclick = () => {
+            stages.logo.style.display = 'none';
+            stages.crawl.style.display = 'none';
+            stages.map.style.display = 'grid';
+            stages.map.style.opacity = '1';
+        };
+    </script>
 </body>
 </html>
