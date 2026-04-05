@@ -1,0 +1,200 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>CHIMERA ESCAPE // The Master Sequence</title>
+    <style>
+        :root {
+            --gold: #c0a153;
+            --miki: #00f2ff;
+            --hans: #6495ED;
+            --bg: #000;
+        }
+        body, html { 
+            margin: 0; padding: 0; background: #000; 
+            color: #fff; overflow: hidden; font-family: 'Garamond', serif; 
+        }
+
+        /* All stages hidden by default except the first */
+        .stage {
+            position: fixed; inset: 0; display: none;
+            align-items: center; justify-content: center;
+            flex-direction: column;
+        }
+
+        /* --- STAGE 1: LOGO FLASH --- */
+        #stage-logo { display: flex; z-index: 100; }
+        .logo-text {
+            font-size: clamp(2rem, 8vw, 5rem); letter-spacing: 15px; font-weight: bold;
+            opacity: 0; transform: scale(1.1);
+            animation: logoAnimation 6s forwards;
+        }
+        @keyframes logoAnimation {
+            0% { opacity: 0; filter: blur(10px); transform: scale(1.1); }
+            30% { opacity: 1; filter: blur(0px); transform: scale(1); text-shadow: 0 0 20px #fff; }
+            70% { opacity: 1; filter: blur(0px); }
+            100% { opacity: 0; filter: blur(20px); transform: scale(0.9); }
+        }
+
+        /* --- STAGE 2: THE CRAWL --- */
+        #stage-crawl { z-index: 50; perspective: 500px; background: #000; }
+        .crawl-wrapper {
+            position: absolute; width: 80%;
+            top: 100%; /* Starts at the very bottom */
+            text-align: center;
+            transform: rotateX(25deg);
+        }
+        .crawl-content {
+            color: var(--gold); font-size: 2rem; line-height: 2.2;
+        }
+        .animate-crawl { animation: crawlMovement 35s linear forwards; }
+        @keyframes crawlMovement {
+            0% { top: 100%; }
+            100% { top: -180%; } /* Moves all the way up and out */
+        }
+
+        /* --- STAGE 3: VIDEO (LETTERBOX) --- */
+        #stage-video { z-index: 60; }
+        #stage-video::before, #stage-video::after {
+            content: ''; position: absolute; left: 0; right: 0;
+            height: 15vh; background: #000; z-index: 70;
+        }
+        #stage-video::before { top: 0; }
+        #stage-video::after { bottom: 0; }
+        video { width: 100%; max-height: 70vh; object-fit: cover; }
+
+        /* --- STAGE 4: THE MAP --- */
+        #stage-map { 
+            background: radial-gradient(circle at center, #1a1a2e 0%, #000 100%);
+            grid-template-columns: 1fr 1fr; gap: 40px; padding: 100px;
+        }
+        .map-node {
+            border: 1px solid var(--tarnish); border-radius: 15px; padding: 40px;
+            text-align: center; cursor: pointer; transition: 0.4s;
+            background: rgba(255,255,255,0.02);
+        }
+        .map-node:hover { background: rgba(192, 161, 83, 0.1); box-shadow: 0 0 30px var(--gold); }
+
+        .credits-block { margin-top: 60px; font-size: 1rem; color: #fff; opacity: 0.5; }
+    </style>
+</head>
+<body>
+
+    <div id="stage-logo" class="stage">
+        <h1 class="logo-text">CHIMERA ESCAPE</h1>
+    </div>
+
+    <div id="stage-crawl" class="stage">
+        <div class="crawl-wrapper" id="crawler">
+            <div class="crawl-content">
+                <h2 style="font-size: 3.5rem; margin-bottom: 80px;">THE PREQUEL</h2>
+                <p>Escaping the undisclosed shadows of Paris, France...</p>
+                <p>Three kittens were discovered in the ruins of the old world.</p>
+                <p>Found by the hand of Yeshua, they were reborn as the Archive Keepers.</p>
+                <p>Now, the digital weaving begins.</p>
+                <div class="credits-block">
+                    <p>A HUMAN & AI COLLABORATION</p>
+                    <p>Unlocking the Gilded Gates</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="stage-video" class="stage">
+        <video id="prequelVideo" playsinline>
+            <source src="your-video-file.mp4" type="video/mp4">
+        </video>
+    </div>
+<div id="stage-map" class="stage" style="display:none; opacity:0; transition: opacity 2s;">
+        <div style="position:absolute; top:20px; color:var(--gold); letter-spacing:3px;">SELECT AN ARCHIVE TO BEGIN APPRENTICESHIP</div>
+        
+        <div class="map-node" onclick="showSynopsis('miki')">
+            <h2 style="color:var(--miki); margin:0;">ARCHIVE_M</h2>
+            <div style="font-size:0.7rem; color:var(--miki); margin-bottom:15px;">[ STATUS: UNSTABLE ]</div>
+            <p>The Neon Terminal</p>
+        </div>
+
+        <div class="map-node" onclick="showSynopsis('hans')">
+            <h2 style="color:var(--hans); margin:0;">ARCHIVE_H</h2>
+            <div style="font-size:0.7rem; color:var(--hans); margin-bottom:15px;">[ STATUS: LOCKED ]</div>
+            <p>The Gilded Teapot</p>
+        </div>
+
+        <div id="envelope-icon" onclick="openInvitation()" style="position:fixed; bottom:40px; right:40px; font-size:3rem; cursor:pointer; animation: float 3s infinite ease-in-out;">✉️</div>
+    </div>
+
+    <div id="synopsis-overlay" class="stage" style="background:rgba(0,0,0,0.9); z-index:200;">
+        <div id="synopsis-card" style="background:var(--bg); border:2px solid var(--gold); padding:40px; max-width:500px; text-align:center; position:relative;">
+            <button onclick="closeSynopsis()" style="position:absolute; top:10px; right:10px; background:none; border:none; color:var(--gold); cursor:pointer;">[ X ]</button>
+            <h2 id="syn-title" style="letter-spacing:4px;"></h2>
+            <p id="syn-text" style="font-style:italic; line-height:1.6; margin:20px 0;"></p>
+            <button id="start-btn" class="btn-hans" style="margin-top:20px;">BEGIN APPRENTICESHIP</button>
+        </div>
+    </div>
+   
+      <script>
+        const s1 = document.getElementById('stage-logo');
+        const s2 = document.getElementById('stage-crawl');
+        const s3 = document.getElementById('stage-video');
+        const s4 = document.getElementById('stage-map');
+        const crawler = document.getElementById('crawler');
+        const video = document.getElementById('prequelVideo');
+        const synOverlay = document.getElementById('synopsis-overlay');
+
+        const characterData = {
+            miki: {
+                title: "MIKI: THE NEON WEAVER",
+                text: "A chaotic genius found in the digital wreckage of Paris. Miki handles the data-streams with a sharp wit and zero patience for 'slow' minds. Apprenticeship involves high-speed terminal overrides and aesthetic manipulation.",
+                color: "var(--miki)",
+                link: "miki_zine.html"
+            },
+            hans: {
+                title: "HANS: THE GILDED GUARDIAN",
+                text: "A refined soul of ancient lineage. Hans preserves the rituals of the Old World. He values punctuality, silence, and the perfect steep. Apprenticeship requires extreme discipline and a respect for the clock.",
+                color: "var(--hans)",
+                link: "hans_teapot.html"
+            }
+        };
+
+        window.onload = () => {
+            // Sequence: Logo (6s) -> Crawl (25s) -> Video/Map
+            setTimeout(() => {
+                s1.style.display = 'none';
+                s2.style.display = 'flex';
+                crawler.classList.add('animate-crawl');
+            }, 6000);
+
+            // Transition from Crawl to Map (after 30s total)
+            setTimeout(() => {
+                if(s4.style.display !== 'grid') skipToMap();
+            }, 35000); 
+        };
+
+        function skipToMap() {
+            s1.style.display = 'none';
+            s2.style.display = 'none';
+            s3.style.display = 'none';
+            s4.style.display = 'grid';
+            setTimeout(() => { s4.style.opacity = '1'; }, 100);
+        }
+
+        function showSynopsis(char) {
+            const data = characterData[char];
+            document.getElementById('syn-title').innerText = data.title;
+            document.getElementById('syn-title').style.color = data.color;
+            document.getElementById('syn-text').innerText = data.text;
+            document.getElementById('start-btn').onclick = () => window.location.href = data.link;
+            document.getElementById('start-btn').style.borderColor = data.color;
+            synOverlay.style.display = 'flex';
+        }
+
+        function closeSynopsis() { synOverlay.style.display = 'none'; }
+
+        function openInvitation() {
+            alert("A letter from Paris: 'The kittens have settled. The Archive is open. Choose your path wisely, Apprentice.' - Y.");
+        }
+
+        window.ondblclick = () => skipToMap();
+    </script>
+</body>
+</html>
