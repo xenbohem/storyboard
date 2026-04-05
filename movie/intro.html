@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>CHIMERA ESCAPE // The Prequel</title>
+    <style>
+        :root {
+            --gold: #c0a153;
+            --miki: #00f2ff;
+            --hans: #6495ED;
+            --bg: #000;
+        }
+        body, html { 
+            margin: 0; padding: 0; background: var(--bg); 
+            color: #fff; overflow: hidden; font-family: 'Garamond', serif; 
+        }
+
+        /* --- 1. THE LOGO FLASH --- */
+        #intro-stage {
+            position: fixed; inset: 0; display: flex; align-items: center; justify-content: center;
+            z-index: 100; background: #000;
+        }
+        .logo-text {
+            font-size: clamp(2rem, 8vw, 5rem); letter-spacing: 15px; font-weight: bold;
+            opacity: 0; animation: logoFade 5s forwards;
+        }
+
+        @keyframes logoFade {
+            0% { opacity: 0; filter: blur(10px); }
+            50% { opacity: 1; filter: blur(0px); text-shadow: 0 0 20px #fff; }
+            100% { opacity: 0; filter: blur(20px); }
+        }
+
+        /* --- 2. THE CINEMATIC CRAWL --- */
+        #crawl-stage {
+            position: absolute; width: 100%; height: 100%;
+            display: flex; justify-content: center; perspective: 600px;
+            bottom: -120%; transition: none;
+        }
+        .crawl-content {
+            transform: rotateX(25deg);
+            width: 70%; text-align: center; color: var(--gold);
+            font-size: 1.8rem; line-height: 2;
+        }
+        .animate-crawl { animation: crawlMove 25s linear forwards; }
+
+        @keyframes crawlMove {
+            0% { transform: rotateX(25deg) translateY(100vh); }
+            100% { transform: rotateX(25deg) translateY(-150vh); }
+        }
+
+        /* --- 3. THE VIDEO TRAILER (LETTERBOXED) --- */
+        #video-stage {
+            position: fixed; inset: 0; display: none; 
+            align-items: center; justify-content: center; z-index: 50;
+        }
+        /* The Movie Bars */
+        #video-stage::before, #video-stage::after {
+            content: ''; position: absolute; left: 0; right: 0;
+            height: 15vh; background: #000; z-index: 60;
+        }
+        #video-stage::before { top: 0; }
+        #video-stage::after { bottom: 0; }
+
+        video { width: 100%; height: auto; max-height: 70vh; object-fit: cover; }
+
+        /* --- 4. THE INTERACTIVE MAP --- */
+        #map-screen {
+            position: fixed; inset: 0; background: radial-gradient(circle at center, #1a1a2e 0%, #000 100%);
+            display: none; grid-template-columns: 1fr 1fr; gap: 30px; padding: 100px;
+            opacity: 0; transition: opacity 2s; z-index: 10;
+        }
+        .map-node {
+            border: 1px solid rgba(192, 161, 83, 0.3); border-radius: 10px;
+            display: flex; flex-direction: column; align-items: center; justify-content: center;
+            cursor: pointer; background: rgba(255,255,255,0.03); transition: 0.4s;
+        }
+        .map-node:hover { border-color: var(--gold); box-shadow: 0 0 20px rgba(192, 161, 83, 0.2); }
+
+        /* The Envelope Notification */
+        #envelope-icon {
+            position: fixed; bottom: 40px; right: 40px; font-size: 3rem;
+            cursor: pointer; display: none; animation: float 3s infinite ease-in-out;
+        }
+        @keyframes float { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-10px); } }
+
+        .credits { margin-top: 50px; font-size: 0.9rem; color: #fff; opacity: 0.6; }
+    </style>
+</head>
+<body>
+
+    <div id="intro-stage">
+        <h1 class="logo-text">CHIMERA ESCAPE</h1>
+    </div>
+
+    <div id="crawl-stage">
+        <div class="crawl-content">
+            <h2 style="font-size: 3rem; margin-bottom: 50px;">A PREQUEL</h2>
+            <p>Escaping the undisclosed shadows of Paris, France...</p>
+            <p>Three kittens were discovered in the ruins of the old world.</p>
+            <p>Found by the hand of Yeshua, they were reborn as the Archive Keepers.</p>
+            <p>Now, the digital weaving begins.</p>
+            
+            <div class="credits">
+                <p>A HUMAN & AI COLLABORATION</p>
+                <p>Unlocking the Gilded Gates</p>
+            </div>
+        </div>
+    </div>
+
+    <div id="video-stage">
+        <video id="trailer" playsinline>
+            <source src="your-ai-video.mp4" type="video/mp4">
+            </video>
+    </div>
+
+    <div id="map-screen">
+        <div class="map-node" onclick="location.href='miki.html'">
+            <h2 style="color:var(--miki)">ARCHIVE_M</h2>
+            <p>Miki's Neon Terminal</p>
+        </div>
+        <div class="map-node" onclick="location.href='hans.html'">
+            <h2 style="color:var(--hans)">ARCHIVE_H</h2>
+            <p>The Gilded Teapot</p>
+        </div>
+        
+        <div id="envelope-icon" onclick="alert('Message: Start your apprenticeship?')">✉️</div>
+    </div>
+
+    <script>
+        const intro = document.getElementById('intro-stage');
+        const crawl = document.getElementById('crawl-stage');
+        const videoStage = document.getElementById('video-stage');
+        const trailer = document.getElementById('trailer');
+        const map = document.getElementById('map-screen');
+        const env = document.getElementById('envelope-icon');
+
+        // 1. LOGO TO CRAWL
+        setTimeout(() => {
+            intro.style.display = 'none';
+            crawl.classList.add('animate-crawl');
+        }, 5000);
+
+        // 2. CRAWL TO VIDEO
+        setTimeout(() => {
+            crawl.style.display = 'none';
+            videoStage.style.display = 'flex';
+            trailer.play();
+        }, 30000); // Adjust based on crawl speed
+
+        // 3. VIDEO TO MAP
+        trailer.onended = function() {
+            videoStage.style.opacity = '0';
+            setTimeout(() => {
+                videoStage.style.display = 'none';
+                map.style.display = 'grid';
+                setTimeout(() => { 
+                    map.style.opacity = '1';
+                    env.style.display = 'block';
+                }, 100);
+            }, 1000);
+        };
+
+        // DEV OVERRIDE: Click to skip to map during testing
+        window.ondblclick = () => {
+            videoStage.style.display = 'none';
+            crawl.style.display = 'none';
+            intro.style.display = 'none';
+            map.style.display = 'grid';
+            map.style.opacity = '1';
+            env.style.display = 'block';
+        };
+    </script>
+</body>
+</html>
