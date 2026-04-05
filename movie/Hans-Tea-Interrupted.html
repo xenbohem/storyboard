@@ -1,0 +1,198 @@
+<!DOCTYPE html>
+<html lang="en">
+<head><script src="/.nekoweb-api/static/site.js" defer></script>
+    <meta charset="UTF-8">
+    <title>Hans's Gilded Teapot // Archive_H</title>
+    <style>
+        :root {
+            --velvet: #2d1341;
+            --cornflower: #6495ED;
+            --tarnish: #c0a153;
+            --dusk: #100818;
+            --paper: #e7dcc8;
+        }
+
+        body {
+            background: var(--dusk); color: var(--paper);
+            font-family: 'Garamond', serif; margin: 0;
+            display: flex; align-items: center; justify-content: center; min-height: 100vh;
+        }
+
+        /* --- Hans UI Layout --- */
+        #hans-study {
+            display: grid; grid-template-columns: 320px 1fr; gap: 40px;
+            width: 90%; max-width: 1100px; padding: 30px;
+            background: rgba(45, 19, 65, 0.4); border: 1px solid var(--tarnish);
+            border-radius: 20px; box-shadow: 0 0 50px rgba(0,0,0,0.5);
+        }
+
+        .panel-side { text-align: center; border-right: 1px dashed var(--tarnish); padding-right: 30px; }
+        
+        .hans-avatar {
+            width: 160px; height: 160px; border-radius: 50%;
+            border: 4px solid var(--cornflower); margin-bottom: 20px;
+            object-fit: cover; transition: filter 0.5s ease;
+            box-shadow: 0 0 20px rgba(100, 149, 237, 0.3);
+        }
+
+        #hansSpeech { font-style: italic; line-height: 1.6; color: #bbb; min-height: 100px; }
+
+        .panel-main { padding-left: 10px; }
+        
+        .btn-etiquette {
+            background: var(--velvet); color: var(--paper); border: 1px solid var(--tarnish);
+            padding: 15px; width: 100%; border-radius: 5px; cursor: pointer;
+            text-transform: uppercase; letter-spacing: 2px; font-family: 'Garamond', serif;
+            transition: 0.3s; margin-top: 20px;
+        }
+
+        .btn-etiquette:hover:not(:disabled) { background: var(--tarnish); color: var(--dusk); }
+        .btn-etiquette:disabled { opacity: 0.2; cursor: not-allowed; }
+
+        #status-ticker {
+            margin-top: 30px; padding: 15px; border: 1px solid var(--cornflower);
+            background: rgba(0,0,0,0.6); font-family: monospace; font-size: 0.85rem;
+            color: var(--cornflower);
+        }
+
+        /* --- Overlay for Intro --- */
+        #hansIntro {
+            position: fixed; inset: 0; background: #000; z-index: 1000;
+            display: flex; align-items: center; justify-content: center; transition: 1s;
+        }
+        .hidden { display: none !important; }
+        .fade { opacity: 0; }
+    </style>
+</head>
+<body>
+
+<div id="hansIntro">
+    <div style="text-align:center; max-width: 500px;">
+        <img src="hans_sus.jpg" class="hans-avatar">
+        <h2 style="color:var(--tarnish); letter-spacing: 5px;">ARCHIVE_H: THE TEAPOT</h2>
+        <p>"Miki's 'tunnel' has deposited you on my doorstep. How... unrefined. I suppose you expect a cup of tea? We shall see if you can handle the etiquette first."</p>
+        <button class="btn-etiquette" onclick="closeIntro()">Begin the Protocol</button>
+    </div>
+</div>
+
+<div id="hans-study" class="hidden">
+    <aside class="panel-side">
+        <img src="hans_standard.jpg" id="hansImg" class="hans-avatar">
+        <h3 style="color:var(--tarnish)">HANS</h3>
+        <p id="hansSpeech">"Correct posture, apprentice. The leaf is watching."</p>
+    </aside>
+
+    <main class="panel-main">
+        <h1 style="color:var(--cornflower); margin-top: 0;">The Ritual of the Black Leaf</h1>
+        
+        <div id="ritual-controls">
+            <p>Stage 1: Perform the 3-Fold Pour to prove your worth.</p>
+            <button class="btn-etiquette" id="mainActionBtn" onclick="runRitual()">Execute Ceremony</button>
+        </div>
+
+        <div id="status-ticker">> PROTOCOL_IDLE // AWAITING INPUT</div>
+
+        <div id="reward-section" class="hidden" style="margin-top: 40px; border-top: 1px solid var(--tarnish); padding-top: 20px;">
+            <h3 style="color:var(--tarnish)">The Etiquette Ballad</h3>
+            <p><em>"A melody for the punctual..."</em></p>
+            <div style="background: #111; padding: 20px; border: 1px solid var(--cornflower);">
+                <p style="font-size: 0.9rem; white-space: pre-line;">
+                    "Observe the cup, a porcelain sky,
+                    Where Earl Grey clouds begin to fly..."
+                </p>
+                <p>[ SOUNDCLOUD_PLAYER_HERE ]</p>
+            </div>
+        </div>
+    </main>
+</div>
+
+<script>
+    // Configuration for Image Paths
+    const HANS_IMAGES = {
+        sus: "hans_sus.jpg",
+        standard: "hans_standard.jpg",
+        grumpy: "hans_nightcap.jpg"
+    };
+
+    function closeIntro() {
+        document.getElementById('hansIntro').classList.add('fade');
+        setTimeout(() => {
+            document.getElementById('hansIntro').classList.add('hidden');
+            document.getElementById('hans-study').classList.remove('hidden');
+            checkExistingTime();
+        }, 1000);
+    }
+
+    function runRitual() {
+        // Save the current time
+        const now = new Date().getTime();
+        localStorage.setItem('hans_tea_start', now);
+        
+        document.getElementById('hansSpeech').innerText = "Hans: Acceptable technique. Now, begone. Return in exactly ONE HOUR for your reward. If you are a second late, I shall be... displeased.";
+        document.getElementById('status-ticker').innerText = "> APPOINTMENT LOGGED: RETURN AT T+60 MIN";
+        
+        updateUIForWait();
+    }
+
+    function updateUIForWait() {
+        const zone = document.getElementById('ritual-controls');
+        zone.innerHTML = `
+            <p style="color:var(--tarnish)">[ APPOINTMENT ACTIVE ]</p>
+            <button class="btn-etiquette" onclick="verifyReturn()">Check The Pocket Watch</button>
+            <button class="btn-etiquette" style="font-size: 0.7rem; border:none; opacity:0.5;" onclick="resetHans()">Reset (Dev Only)</button>
+        `;
+    }
+
+    function verifyReturn() {
+        const startTime = localStorage.getItem('hans_tea_start');
+        if (!startTime) return;
+
+        const now = new Date().getTime();
+        const diffInMins = (now - startTime) / 1000 / 60;
+        const diffInHours = diffInMins / 60;
+
+        const speech = document.getElementById('hansSpeech');
+        const ticker = document.getElementById('status-ticker');
+        const img = document.getElementById('hansImg');
+
+        if (diffInHours >= 24) {
+            // 24 HOUR FAILURE (The Nightcap)
+            img.src = HANS_IMAGES.grumpy;
+            speech.innerText = "Hans: (Adjusting his velvet nightcap) A full day? I have aged into a second retirement waiting for you. The tea is now a biological hazard. Disgraceful.";
+            ticker.innerText = "> STATUS: ETIQUETTE CRITICAL FAILURE // HANS IS NAPPING";
+        } 
+        else if (diffInMins >= 55 && diffInMins <= 75) {
+            // SUCCESS (The Reward)
+            img.src = HANS_IMAGES.standard;
+            speech.innerText = "Hans: Punctuality. Perhaps there is a flicker of hope for this generation after all. Enjoy the music; it is far more refined than Miki's noise.";
+            ticker.innerText = "> STATUS: SUCCESS // REWARD UNLOCKED";
+            document.getElementById('reward-section').classList.remove('hidden');
+        } 
+        else if (diffInMins < 55) {
+            // TOO EARLY
+            speech.innerText = "Hans: You are early. Patience is a virtue you clearly lack. Go back and count the threads in your sleeve for another " + Math.ceil(60 - diffInMins) + " minutes.";
+            ticker.innerText = "> STATUS: TOO EAGER // REJECTED";
+        } 
+        else {
+            // LATE BUT NOT 24H
+            speech.innerText = "Hans: Late. The Earl Grey is cold and my heart is colder. You must try again, provided you can find a watch that actually works.";
+            ticker.innerText = "> STATUS: LATE // SESSION INVALIDATED";
+            localStorage.removeItem('hans_tea_start');
+            location.reload();
+        }
+    }
+
+    function checkExistingTime() {
+        if(localStorage.getItem('hans_tea_start')) {
+            updateUIForWait();
+        }
+    }
+
+    function resetHans() {
+        localStorage.removeItem('hans_tea_start');
+        location.reload();
+    }
+</script>
+
+</body>
+</html>
