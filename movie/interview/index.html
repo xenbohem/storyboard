@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>CHIMERA ESCAPE // Choose Your Path</title>
+    <link href="https://fonts.googleapis.com/css2?family=Uncial+Antiqua&family=Cinzel:wght@400;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --deep-purple: #1a0033;
+            --cornflower: #6495ED;
+            --glow: #7b2cbf;
+            --text: #e0aaff;
+        }
+
+        body {
+            margin: 0; background: #050505;
+            color: var(--text); font-family: 'Cinzel', serif;
+            display: flex; justify-content: center; align-items: center; height: 100vh;
+            overflow: hidden;
+        }
+
+        /* --- THE DESTINY CONTAINER --- */
+        #destiny-selector {
+            text-align: center; width: 90%; max-width: 900px;
+            padding: 40px; border: 1px solid var(--cornflower);
+            background: rgba(26, 0, 51, 0.9);
+            box-shadow: 0 0 40px rgba(100, 149, 237, 0.1);
+            animation: fadeIn 2s ease;
+        }
+
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+
+        h2 { font-family: 'Uncial Antiqua', cursive; color: var(--cornflower); font-size: 2rem; margin-bottom: 10px; }
+        p.subtitle { margin-bottom: 40px; letter-spacing: 2px; font-size: 0.9rem; opacity: 0.8; }
+
+        /* --- THE GRID OF INTERESTS --- */
+        .interest-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+            gap: 20px;
+        }
+
+        .interest-card {
+            border: 1px solid rgba(100, 149, 237, 0.3);
+            padding: 25px 10px;
+            cursor: pointer;
+            transition: all 0.4s ease;
+            background: rgba(0,0,0,0.3);
+        }
+
+        .interest-card:hover {
+            border-color: var(--cornflower);
+            background: var(--deep-purple);
+            box-shadow: 0 0 20px var(--glow);
+            transform: translateY(-5px);
+        }
+
+        .icon { font-size: 2.5rem; margin-bottom: 15px; display: block; }
+        .label { font-weight: bold; letter-spacing: 1px; color: var(--cornflower); }
+        .mentor { font-size: 0.7rem; margin-top: 8px; opacity: 0.6; text-transform: uppercase; }
+
+    </style>
+</head>
+<body>
+
+<div id="destiny-selector">
+    <h2>What calls to your soul?</h2>
+    <p class="subtitle">Select an affinity to find your mentor within the Sanctuary.</p>
+
+    <div class="interest-grid">
+        <div class="interest-card" onclick="startPath('star_coffee')">
+            <span class="icon">☕</span>
+            <span class="label">COFFEE</span>
+            <div class="mentor">Path of Star</div>
+        </div>
+
+        <div class="interest-card" onclick="startPath('hans_tea')">
+            <span class="icon">🍵</span>
+            <span class="label">TEA</span>
+            <div class="mentor">Path of Hans</div>
+        </div>
+
+        <div class="interest-card" onclick="startPath('miki_music')">
+            <span class="icon">🎹</span>
+            <span class="label">MUSIC</span>
+            <div class="mentor">Path of Miki</div>
+        </div>
+
+        <div class="interest-card" onclick="startPath('chari_pets')">
+            <span class="icon">🐾</span>
+            <span class="label">PETS</span>
+            <div class="mentor">Path of Chari</div>
+        </div>
+
+        <div class="interest-card" onclick="startPath('hans_garden')">
+            <span class="icon">🌿</span>
+            <span class="label">GARDENS</span>
+            <div class="mentor">Path of Hans</div>
+        </div>
+    </div>
+</div>
+
+<script>
+    function startPath(pathID) {
+        console.log("Navigating to: " + pathID);
+        
+        // Add a "flash" effect before leaving
+        document.body.style.transition = "background 0.5s";
+        document.body.style.background = "var(--cornflower)";
+        
+        setTimeout(() => {
+            // Here you would link to your specific pages
+            if(pathID.includes('star')) window.location.href = 'star_path.html';
+            if(pathID.includes('hans')) window.location.href = 'hans_path.html';
+            if(pathID.includes('miki')) window.location.href = 'miki_path.html';
+            if(pathID.includes('chari')) window.location.href = 'chari_path.html';
+        }, 500);
+    }
+</script>
+
+</body>
+</html>
