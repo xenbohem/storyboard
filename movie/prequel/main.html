@@ -15,21 +15,26 @@
             color: #fff; overflow: hidden; font-family: 'Garamond', serif; 
         }
 
+        /* Stage Styling */
         .stage {
             position: fixed; inset: 0; display: none;
-            align-items: center; justify-content: center;
-            flex-direction: column;
+            flex-direction: column; align-items: center; justify-content: center;
+            z-index: 10;
         }
 
         /* --- STAGE 1: THE START TRIGGER --- */
-        #stage-start { display: flex; z-index: 100; cursor: pointer; }
+        #stage-start { 
+            display: flex; z-index: 100; cursor: pointer; 
+            background: #000;
+        }
         .start-logo {
             font-size: clamp(2rem, 8vw, 5rem); letter-spacing: 15px; font-weight: bold;
-            transition: 2s; animation: pulse 3s infinite;
+            pointer-events: none; /* Let the click pass to the div */
         }
-        @keyframes pulse { 0%, 100% { opacity: 0.4; } 50% { opacity: 1; text-shadow: 0 0 20px #fff; } }
+        .pulse { animation: pulseAnim 3s infinite; }
+        @keyframes pulseAnim { 0%, 100% { opacity: 0.3; } 50% { opacity: 1; text-shadow: 0 0 30px #fff; } }
 
-        /* --- STAGE 2: MOVIE PREVIEW (LETTERBOX) --- */
+        /* --- STAGE 2: MOVIE PREVIEW --- */
         #stage-video { z-index: 90; background: #000; }
         #stage-video::before, #stage-video::after {
             content: ''; position: absolute; left: 0; right: 0;
@@ -62,7 +67,7 @@
         }
         .map-node:hover { border-color: var(--gold); background: rgba(192, 161, 83, 0.05); }
 
-        /* --- SYNOPSIS OVERLAY --- */
+        /* --- SYNOPSIS --- */
         #synopsis {
             position: fixed; inset: 0; background: rgba(0,0,0,0.95);
             display: none; align-items: center; justify-content: center; z-index: 200;
@@ -74,17 +79,17 @@
 <body>
 
     <audio id="mainTheme" loop>
-        <source src="TrueValentine.mp3" type="audio/mpeg">
+        <source src="your-theme-music.mp3" type="audio/mpeg">
     </audio>
 
-    <div id="stage-start" class="stage" onclick="startSequence()">
-        <h1 class="start-logo">CHIMERA ESCAPE</h1>
-        <p style="letter-spacing: 5px; font-size: 0.8rem; margin-top: 20px;">[ CLICK TO ENTER ARCHIVE ]</p>
+    <div id="stage-start" class="stage">
+        <h1 class="start-logo pulse">CHIMERA ESCAPE</h1>
+        <p style="letter-spacing: 5px; font-size: 0.8rem; margin-top: 20px; opacity: 0.5;">[ CLICK TO BEGIN ]</p>
     </div>
 
     <div id="stage-video" class="stage">
         <video id="previewVideo" playsinline>
-            <source src="prequel-video.mp4" type="video/mp4">
+            <source src="your-preview-movie.mp4" type="video/mp4">
         </video>
     </div>
 
@@ -123,46 +128,59 @@
     </div>
 
     <script>
+        const startStage = document.getElementById('stage-start');
+        const videoStage = document.getElementById('stage-video');
+        const crawlStage = document.getElementById('stage-crawl');
+        const mapStage = document.getElementById('stage-map');
+        
         const video = document.getElementById('previewVideo');
         const theme = document.getElementById('mainTheme');
+        const crawler = document.getElementById('crawler');
 
-        function startSequence() {
-            // Start Music
-            theme.play();
+        // --- THE MASTER TRIGGER ---
+        startStage.addEventListener('click', () => {
+            console.log("Sequence Started");
             
-            // Fade Start Stage
-            document.getElementById('stage-start').style.display = 'none';
-            
-            // Show Video Stage
-            document.getElementById('stage-video').style.display = 'flex';
-            video.play().catch(() => {
-                // If video fails/missing, skip to crawl
-                startCrawl();
-            });
-        }
+            // 1. Play Theme
+            theme.play().catch(e => console.log("Audio waiting for user interaction..."));
 
-        video.onended = function() {
+            // 2. Hide Start, Show Video
+            startStage.style.display = 'none';
+            videoStage.style.display = 'flex';
+
+            // 3. Try to play video
+            video.play()
+                .then(() => {
+                    console.log("Video playing...");
+                })
+                .catch(err => {
+                    console.log("No video found or blocked, skipping to crawl.");
+                    startCrawl();
+                });
+        });
+
+        // When Video Ends
+        video.onended = () => {
             startCrawl();
         };
 
         function startCrawl() {
-            document.getElementById('stage-video').style.display = 'none';
-            document.getElementById('stage-crawl').style.display = 'flex';
-            document.getElementById('crawler').classList.add('animate-crawl');
+            videoStage.style.display = 'none';
+            crawlStage.style.display = 'flex';
+            crawler.classList.add('animate-crawl');
             
             // Move to Map after 38 seconds
             setTimeout(() => {
-                document.getElementById('stage-crawl').style.display = 'none';
-                const map = document.getElementById('stage-map');
-                map.style.display = 'grid';
-                setTimeout(() => map.style.opacity = '1', 100);
+                crawlStage.style.display = 'none';
+                mapStage.style.display = 'grid';
+                setTimeout(() => mapStage.style.opacity = '1', 100);
             }, 38000);
         }
 
-        // --- CHARACTER LOGIC ---
+        // --- CHARACTER SYNOPSIS LOGIC ---
         const charInfo = {
-            miki: { title: "MIKI", text: "Chaotic. Brilliant. Fast. Miki weaves the neon streams of the new world.", link: "miki.html", color: "var(--miki)" },
-            hans: { title: "HANS", text: "Refined. Patient. Punctual. Hans guards the etiquette of the old world.", link: "hans.html", color: "var(--hans)" }
+            miki: { title: "MIKI", text: "Chaotic. Brilliant. Fast. Miki weaves the neon streams.", color: "var(--miki)" },
+            hans: { title: "HANS", text: "Refined. Patient. Punctual. Hans guards the etiquette.", color: "var(--hans)" }
         };
 
         function openSyn(char) {
@@ -170,11 +188,21 @@
             document.getElementById('syn-title').innerText = data.title;
             document.getElementById('syn-title').style.color = data.color;
             document.getElementById('syn-text').innerText = data.text;
-            document.getElementById('start-btn').onclick = () => window.location.href = data.link;
             document.getElementById('synopsis').style.display = 'flex';
         }
 
-        function closeSyn() { document.getElementById('synopsis').style.display = 'none'; }
+        function closeSyn() { 
+            document.getElementById('synopsis').style.display = 'none'; 
+        }
+
+        // DEV: Double-click to jump to map instantly
+        window.addEventListener('dblclick', () => {
+            startStage.style.display = 'none';
+            videoStage.style.display = 'none';
+            crawlStage.style.display = 'none';
+            mapStage.style.display = 'grid';
+            mapStage.style.opacity = '1';
+        });
     </script>
 </body>
 </html>
