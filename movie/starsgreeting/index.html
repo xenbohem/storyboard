@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>CHIMERA ESCAPE // The Star's Welcome</title>
+    <link href="https://fonts.googleapis.com/css2?family=Uncial+Antiqua&family=Cinzel:wght@400;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --deep-purple: #1a0033;
+            --cornflower: #6495ED;
+            --glow: #7b2cbf;
+            --text: #e0aaff;
+        }
+
+        body, html { 
+            margin: 0; padding: 0; background: #050505; 
+            color: var(--text); overflow: hidden;
+            display: flex; justify-content: center; align-items: center; height: 100vh;
+        }
+
+        /* --- THE CINEMA ENCLOSURE --- */
+        #cinema-frame {
+            position: relative;
+            width: 90vw; height: 50vw; max-width: 1100px; max-height: 620px;
+            background: radial-gradient(circle, var(--deep-purple) 0%, #000 100%);
+            border: 10px solid #1a1a1a;
+            border-radius: 8px;
+            box-shadow: 0 0 40px rgba(100, 149, 237, 0.15), inset 0 0 100px #000;
+            overflow: hidden;
+        }
+
+        .stage {
+            position: absolute; inset: 0;
+            display: none; flex-direction: column;
+            align-items: center; justify-content: center;
+            padding: 40px; text-align: center;
+        }
+
+        /* --- STAGE 1: THE MEDIEVAL SCROLL --- */
+        #stage-scroll { display: flex; z-index: 10; }
+        
+        .scroll-window {
+            height: 300px; overflow: hidden; position: relative; width: 80%;
+        }
+
+        .medieval-text {
+            font-family: 'Uncial Antiqua', cursive;
+            color: var(--cornflower);
+            font-size: 1.8rem; line-height: 2;
+            text-shadow: 0 0 10px var(--glow);
+            position: absolute; width: 100%; top: 100%;
+        }
+
+        .animate-scroll { animation: scrollUp 12s linear forwards; }
+
+        @keyframes scrollUp {
+            0% { top: 100%; }
+            100% { top: -120%; }
+        }
+
+        /* --- STAGE 2: STAR'S WELCOME --- */
+        #stage-star { opacity: 0; transition: opacity 1.5s; }
+        
+        .welcome-card {
+            border: 1px solid var(--cornflower);
+            padding: 40px; background: rgba(26, 0, 51, 0.8);
+            box-shadow: 0 0 30px var(--deep-purple);
+        }
+
+        h1, h2 { font-family: 'Cinzel', serif; letter-spacing: 4px; color: var(--cornflower); }
+
+        .choice-btns { display: flex; gap: 20px; margin-top: 30px; }
+        
+        .btn {
+            background: transparent; border: 1px solid var(--cornflower);
+            color: var(--cornflower); padding: 12px 25px;
+            font-family: 'Cinzel', serif; cursor: pointer; transition: 0.3s;
+        }
+        .btn:hover {
+            background: var(--cornflower); color: var(--deep-purple);
+            box-shadow: 0 0 20px var(--cornflower);
+        }
+
+        /* SCANLINES */
+        .scanlines {
+            position: absolute; inset: 0; pointer-events: none;
+            background: linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.1) 50%);
+            background-size: 100% 4px; z-index: 100;
+        }
+    </style>
+</head>
+<body>
+
+<div id="cinema-frame">
+    <div class="scanlines"></div>
+
+    <div id="stage-scroll" class="stage">
+        <div class="scroll-window">
+            <div id="scroller" class="medieval-text">
+                THE PARIS DISCLOSURE<br><br>
+                Three kittens found in shadow...<br>
+                Blessed by Yeshua's hand...<br>
+                Reborn as the Archive Keepers...<br>
+                The Chimera Sanctuary awaits.
+            </div>
+        </div>
+    </div>
+
+    <div id="stage-star" class="stage">
+        <div class="welcome-card">
+            <h2>Welcome to the Sanctuary</h2>
+            <p style="font-style: italic;">"I am Star. I keep the keys to the Cafe and the Archive."</p>
+            <p>How do you wish to proceed, traveler?</p>
+            
+            <div class="choice-btns">
+                <button class="btn" onclick="location.href='/shop'">Shop the Cafe</button>
+                <button class="btn" onclick="location.href='/quest'">Begin Apprenticeship</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    const scroller = document.getElementById('scroller');
+    const scrollStage = document.getElementById('stage-scroll');
+    const starStage = document.getElementById('stage-star');
+
+    window.onload = () => {
+        // Start the medieval scroll
+        scroller.classList.add('animate-scroll');
+
+        // Sequence timing:
+        // Scroll takes 12s. We wait 12s + 4s (your requested delay) = 16s total.
+        setTimeout(() => {
+            // Fade out scroll
+            scrollStage.style.transition = "opacity 1s";
+            scrollStage.style.opacity = "0";
+            
+            setTimeout(() => {
+                scrollStage.style.display = "none";
+                starStage.style.display = "flex";
+                // Trigger fade in for Star
+                setTimeout(() => { starStage.style.opacity = "1"; }, 100);
+            }, 1000);
+        }, 16000); 
+    };
+</script>
+
+</body>
+</html>
