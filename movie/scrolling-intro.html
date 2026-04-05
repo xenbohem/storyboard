@@ -1,0 +1,168 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head><script src="/.nekoweb-api/static/site.js" defer></script>
+    <meta charset="UTF-8">
+    <title>CHIMERA ESCAPE // The Master Sequence</title>
+    <style>
+        :root {
+            --gold: #c0a153;
+            --miki: #00f2ff;
+            --hans: #6495ED;
+            --bg: #000;
+        }
+        body, html { 
+            margin: 0; padding: 0; background: #000; 
+            color: #fff; overflow: hidden; font-family: 'Garamond', serif; 
+        }
+
+        .stage {
+            position: fixed; inset: 0; display: none;
+            align-items: center; justify-content: center;
+            flex-direction: column;
+        }
+
+        /* --- STAGE 1: LOGO FLASH --- */
+        #stage-logo { display: flex; z-index: 100; }
+        .logo-text {
+            font-size: clamp(2rem, 8vw, 5rem); letter-spacing: 15px; font-weight: bold;
+            opacity: 0; animation: logoAnimation 6s forwards;
+        }
+        @keyframes logoAnimation {
+            0% { opacity: 0; filter: blur(10px); }
+            30% { opacity: 1; filter: blur(0px); text-shadow: 0 0 20px #fff; }
+            70% { opacity: 1; filter: blur(0px); }
+            100% { opacity: 0; filter: blur(20px); }
+        }
+
+        /* --- STAGE 2: THE CLEAN CRAWL --- */
+        #stage-crawl { z-index: 50; perspective: 450px; }
+        .crawl-wrapper {
+            position: absolute; width: 65%;
+            top: 100%; text-align: center;
+            transform: rotateX(25deg);
+        }
+        .crawl-content { color: var(--gold); font-size: 2.2rem; line-height: 2; }
+        .animate-crawl { animation: crawlMovement 38s linear forwards; }
+        @keyframes crawlMovement {
+            0% { top: 100%; }
+            100% { top: -180%; }
+        }
+
+        /* --- STAGE 4: THE MAP --- */
+        #stage-map { 
+            background: radial-gradient(circle at center, #0a0a0a 0%, #000 100%);
+            grid-template-columns: 1fr 1fr; gap: 40px; padding: 100px;
+            opacity: 0; transition: opacity 2s;
+        }
+        .map-node {
+            border: 1px solid rgba(192, 161, 83, 0.2); border-radius: 10px; padding: 50px;
+            text-align: center; cursor: pointer; transition: 0.5s;
+            background: rgba(255,255,255,0.01);
+        }
+        .map-node:hover { border-color: var(--gold); background: rgba(192, 161, 83, 0.05); }
+
+        /* --- SYNOPSIS OVERLAY --- */
+        #synopsis {
+            position: fixed; inset: 0; background: rgba(0,0,0,0.95);
+            display: none; align-items: center; justify-content: center; z-index: 200;
+        }
+        .card {
+            border: 1px solid var(--gold); padding: 40px; max-width: 500px;
+            text-align: center; background: #000;
+        }
+        .btn {
+            background: none; border: 1px solid var(--gold); color: #fff;
+            padding: 10px 25px; cursor: pointer; margin-top: 20px; font-family: 'Garamond';
+        }
+    </style>
+</head>
+<body>
+
+    <div id="stage-logo" class="stage">
+        <h1 class="logo-text">CHIMERA ESCAPE</h1>
+    </div>
+
+    <div id="stage-crawl" class="stage">
+        <div class="crawl-wrapper" id="crawler">
+            <div class="crawl-content">
+                <h2 style="font-size: 3.5rem; margin-bottom: 60px;">THE PARIS DISCLOSURE</h2>
+                <p>Escaping the undisclosed shadows of Paris, France...</p>
+                <p>Three kittens were discovered in the ruins of the old world.</p>
+                <p>Found by the hand of Yeshua, they were reborn as the Archive Keepers.</p>
+                <p>Now, the digital weaving begins.</p>
+                <p style="font-size: 1.2rem; margin-top: 50px; opacity: 0.6;">A HUMAN & AI COLLABORATION</p>
+            </div>
+        </div>
+    </div>
+
+    <div id="stage-map" class="stage">
+        <div class="map-node" onclick="openSyn('miki')">
+            <h2 style="color:var(--miki)">ARCHIVE_M</h2>
+            <p>Miki's Neon Terminal</p>
+        </div>
+        <div class="map-node" onclick="openSyn('hans')">
+            <h2 style="color:var(--hans)">ARCHIVE_H</h2>
+            <p>The Gilded Teapot</p>
+        </div>
+    </div>
+
+    <div id="synopsis">
+        <div class="card">
+            <h2 id="syn-title"></h2>
+            <p id="syn-text" style="font-style: italic; line-height: 1.6;"></p>
+            <button class="btn" id="start-btn">BEGIN APPRENTICESHIP</button>
+            <br>
+            <button class="btn" style="border:none; font-size: 0.8rem; opacity: 0.5;" onclick="closeSyn()">[ RETURN TO MAP ]</button>
+        </div>
+    </div>
+
+    <script>
+        const stages = {
+            logo: document.getElementById('stage-logo'),
+            crawl: document.getElementById('stage-crawl'),
+            map: document.getElementById('stage-map')
+        };
+
+        const charInfo = {
+            miki: { title: "MIKI", text: "Chaotic. Brilliant. Fast. Miki weaves the neon streams of the new world. Are you fast enough to follow?", link: "miki.html", color: "var(--miki)" },
+            hans: { title: "HANS", text: "Refined. Patient. Punctual. Hans guards the etiquette of the old world. Do you have the discipline to wait?", link: "hans.html", color: "var(--hans)" }
+        };
+
+        window.onload = () => {
+            // Stage 1 -> 2
+            setTimeout(() => {
+                stages.logo.style.display = 'none';
+                stages.crawl.style.display = 'flex';
+                document.getElementById('crawler').classList.add('animate-crawl');
+            }, 6000);
+
+            // Stage 2 -> 3 (Map)
+            setTimeout(() => {
+                stages.crawl.style.display = 'none';
+                stages.map.style.display = 'grid';
+                setTimeout(() => stages.map.style.opacity = '1', 100);
+            }, 42000); 
+        };
+
+        function openSyn(char) {
+            const data = charInfo[char];
+            document.getElementById('syn-title').innerText = data.title;
+            document.getElementById('syn-title').style.color = data.color;
+            document.getElementById('syn-text').innerText = data.text;
+            document.getElementById('start-btn').onclick = () => window.location.href = data.link;
+            document.getElementById('synopsis').style.display = 'flex';
+        }
+
+        function closeSyn() { document.getElementById('synopsis').style.display = 'none'; }
+
+        // Double click to skip to map
+        window.ondblclick = () => {
+            stages.logo.style.display = 'none';
+            stages.crawl.style.display = 'none';
+            stages.map.style.display = 'grid';
+            stages.map.style.opacity = '1';
+        };
+    </script>
+</body>
+</html>
