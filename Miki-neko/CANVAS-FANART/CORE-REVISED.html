@@ -224,13 +224,20 @@
     </div>
 
     <script>
-        const mikiLore = [
+       const mikiLore = [
+            // --- Character Entries ---
             { key: "hans", msg: "[CORE LOG]: Hans attempted to organize my digital files by printing them out. I've countered by setting his digital tea-timer to 'random' intervals. Checkmate." },
-            { key: "star", msg: "[CORE LOG]: Star's romance novels are appearing in the canvas metadata. I suspect she is using them to store encrypted messages for the collective." },
+            { key: "star", msg: "[CORE LOG]: Star's romance novels contain sub-textual patterns that match the Chimera's original blueprints. Either she's a genius, or the author is one of us." },
             { key: "chari", msg: "[CORE LOG]: Chari has mastered the perfect pour. However, she still believes 'firewalls' are something you use to roast coffee beans. Bless her." },
-            { key: "tea", msg: "[CORE LOG]: Brewing sequence initiated. Hans is standing over the kettle with a thermometer. Precision is 99.8%. He is still not satisfied." }
+            
+            // --- Historical & World Lore Entries ---
+            { key: "chimera", msg: "[LORE FRAGMENT]: The Chimera isn't just a name. Records indicate the cafe was built over a 'convergence point.' The tea leaves aren't just floating; they're aligning to a magnetic north that doesn't exist on any map." },
+            { key: "scriptum", msg: "[LORE FRAGMENT]: The Scriptum Archive holds more than just tea recipes. I found a hidden partition labeled 'The Unwritten.' It’s a ledger of every game ever lost in the cafe. The energy in that room is... heavy." },
+            { key: "tea", msg: "[CORE LOG]: Brewing sequence initiated. Hans is standing over the kettle with a thermometer. Precision is 99.8%. He is still not satisfied." },
+            { key: "legacy", msg: "[LORE FRAGMENT]: Long before Star took the counter, there was a 'Founder.' Their signature is on the original lease, but the ink keeps changing color whenever I scan it. Current status: Unknown." },
+            { key: "match", msg: "[BATTLE RECORD]: The most intense MTG match recorded in the cafe lasted 14 hours. By the end, the players weren't even using cards—they were just staring at the steam rising from their cups, predicting the next move." },
+            { key: "secret", msg: "[ENCRYPTED]: If you're reading this, you've looked past the blue hue. The Chimera is waking up. Don't tell Hans I told you." }
         ];
-
         function queryMiki() {
             const val = document.getElementById('coreSearch').value.toLowerCase();
             const res = document.getElementById('logResult');
