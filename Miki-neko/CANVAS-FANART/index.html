@@ -1,0 +1,211 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Miki's Core Log | Chimera Collective</title>
+    <style>
+        :root {
+            --accent: #00d4ff; 
+            --bg: #050505;
+            --text: #e0f7fa;
+            --panel: #0a0a0a;
+        }
+
+        /* --- BASIC SETUP --- */
+        * { margin: 0; padding: 0; box-sizing: border-box; scroll-behavior: smooth; }
+        body, html { 
+            background-color: var(--bg); 
+            color: var(--text);
+            font-family: 'Courier New', Courier, monospace;
+        }
+
+        /* --- TOP SECTION (THE TERMINAL) --- */
+        .terminal-view {
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+            border-bottom: 2px solid var(--accent);
+        }
+
+        .banner-frame {
+            width: 100%;
+            height: 250px;
+            position: relative;
+            background: #222;
+            overflow: hidden;
+            border-bottom: 1px solid var(--accent);
+        }
+
+        .base-layer {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            filter: hue-rotate(180deg) brightness(0.6) saturate(1.5);
+        }
+
+        .reveal-layer {
+            position: absolute;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
+            background-image: url('chimeracafe-banner-cool.jpg');
+            background-size: cover;
+            background-position: center;
+            opacity: 0;
+            transition: opacity 0.4s ease;
+            clip-path: circle(130px at 55% 40%); /* Adjust to Miki's Face */
+        }
+
+        .banner-frame:hover .reveal-layer { opacity: 1; }
+
+        .content-area {
+            flex-grow: 1;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 40px;
+            text-align: center;
+        }
+
+        /* --- THE NAVIGATION BUTTONS --- */
+        .nav-links {
+            margin-top: 30px;
+            display: flex;
+            gap: 20px;
+        }
+
+        .canvas-trigger {
+            background: transparent;
+            border: 1px solid var(--accent);
+            color: var(--accent);
+            padding: 15px 30px;
+            text-decoration: none;
+            font-weight: bold;
+            letter-spacing: 2px;
+            transition: 0.3s;
+            box-shadow: 0 0 10px rgba(0, 212, 255, 0.2);
+        }
+
+        .canvas-trigger:hover {
+            background: var(--accent);
+            color: black;
+            box-shadow: 0 0 25px var(--accent);
+        }
+
+        /* --- HANS'S SEARCH AREA --- */
+        .search-container {
+            width: 100%;
+            max-width: 600px;
+            margin: 20px auto;
+        }
+
+        #coreSearch {
+            width: 70%;
+            background: #000;
+            border: 1px solid var(--accent);
+            color: var(--accent);
+            padding: 12px;
+            outline: none;
+        }
+
+        .access-btn {
+            background: var(--accent);
+            color: black;
+            border: none;
+            padding: 12px 20px;
+            cursor: pointer;
+            font-weight: bold;
+        }
+
+        .log-entry {
+            margin-top: 20px;
+            padding: 20px;
+            background: var(--panel);
+            border: 1px solid rgba(0, 212, 255, 0.2);
+            min-height: 100px;
+            text-align: left;
+        }
+
+        /* --- BOTTOM SECTION (THE WIDE CANVAS) --- */
+        .canvas-section {
+            height: 100vh;
+            width: 100%;
+            background: #111;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .canvas-header {
+            padding: 15px;
+            background: #000;
+            border-bottom: 1px solid var(--accent);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .back-up {
+            color: var(--accent);
+            text-decoration: none;
+            font-size: 0.8rem;
+        }
+
+        .padlet-container {
+            flex-grow: 1;
+            width: 100%;
+        }
+
+        iframe { width: 100%; height: 100%; border: none; }
+    </style>
+</head>
+<body>
+
+    <div class="terminal-view" id="top">
+        <div class="banner-frame">
+            <img src="chimeracafe-banner-cool.jpg" class="base-layer">
+            <div class="reveal-layer"></div>
+        </div>
+
+        <div class="content-area">
+            <h1 style="color:var(--accent); letter-spacing: 5px;">> CHIMERA_CORE_LOG</h1>
+            
+            <div class="search-container">
+                <input type="text" id="coreSearch" placeholder="Request data scan...">
+                <button class="access-btn" onclick="queryMiki()">DECRYPT</button>
+                <div id="logResult" class="log-entry">[SYSTEM READY]</div>
+            </div>
+
+            <div class="nav-links">
+                <a href="#canvas" class="canvas-trigger">OPEN WIDE-VIEW CANVAS</a>
+            </div>
+        </div>
+    </div>
+
+    <div class="canvas-section" id="canvas">
+        <div class="canvas-header">
+            <span style="color: var(--accent)">// LIVE ART & LORE CANVAS</span>
+            <a href="#top" class="back-up">↑ RETURN TO TERMINAL</a>
+        </div>
+        <div class="padlet-container">
+            <iframe src="https://padlet.com/embed/hbu3ozs9k8tqlhuy"></iframe>
+        </div>
+    </div>
+
+    <script>
+        function queryMiki() {
+            const val = document.getElementById('coreSearch').value.toLowerCase();
+            const res = document.getElementById('logResult');
+            
+            const entries = {
+                "hans": "[LOG]: Hans is currently reorganizing the physical ledgers. He has requested I stop 'poking around' the server heat-sync to warm my tea.",
+                "star": "[LOG]: Star's romance novels are appearing in the canvas logs. I've attempted to filter them, but the lore depth is... significant.",
+                "canvas": "[SYSTEM]: Use the button below to access the full-width workspace for art and visual logs."
+            };
+
+            res.innerHTML = entries[val] || "[ERROR]: No match found for that query.";
+        }
+    </script>
+
+</body>
+</html>
