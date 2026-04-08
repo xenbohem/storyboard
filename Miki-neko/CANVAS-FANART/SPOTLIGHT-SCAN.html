@@ -255,6 +255,19 @@
                 res.innerHTML = `<span style="color:#ff4444">[ACCESS DENIED]:</span> No record for '${val}'. Reference the spiderweb for valid bypass codes.`;
             }
         }
+        const frame = document.getElementById('scannerFrame');
+    const spot = document.getElementById('scannerSpot');
+
+    frame.addEventListener('mousemove', (e) => {
+        // Calculate mouse position relative to the banner
+        const rect = frame.getBoundingClientRect();
+        const x = ((e.clientX - rect.left) / rect.width) * 100;
+        const y = ((e.clientY - rect.top) / rect.height) * 100;
+
+        // Update the CSS variables for the clip-path
+        spot.style.setProperty('--x', x + '%');
+        spot.style.setProperty('--y', y + '%');
+    });
     </script>
 </body>
 </html>
