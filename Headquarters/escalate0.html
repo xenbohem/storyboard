@@ -1,0 +1,249 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chimera Collective | The Grand Descent</title>
+    <style>
+        :root {
+            --miki: #bd00ff;
+            --star: #fff59d;
+            --milo: #8bc34a;
+            --chari: #ff5722;
+            --hans: #c5a059;
+            --accent: #00d4ff;
+            --bg: #050505;
+            --panel: rgba(255, 255, 255, 0.03);
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            background-color: var(--bg);
+            color: #e0f7fa;
+            font-family: 'Segoe UI', sans-serif;
+            overflow-x: hidden;
+            scroll-behavior: smooth;
+        }
+
+        /* --- THE NAVIGATION PILLS --- */
+        .ascend-nav {
+            position: fixed;
+            bottom: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            z-index: 1000;
+            display: flex;
+            gap: 10px;
+            background: rgba(0,0,0,0.8);
+            padding: 10px;
+            border-radius: 40px;
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255,255,255,0.1);
+        }
+
+        .nav-pill {
+            color: #fff;
+            text-decoration: none;
+            font-size: 0.65rem;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+            padding: 8px 12px;
+            border-radius: 20px;
+            transition: 0.3s;
+            border: 1px solid transparent;
+        }
+
+        .nav-pill:hover { border-color: var(--accent); color: var(--accent); }
+
+        /* --- SECTION LAYOUT --- */
+        .floor {
+            min-height: 100vh;
+            width: 100%;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 80px 20px;
+            position: relative;
+        }
+
+        .glass-panel {
+            width: 95%;
+            max-width: 1000px;
+            padding: 50px;
+            background: var(--panel);
+            backdrop-filter: blur(25px);
+            border: 1px solid rgba(255,255,255,0.05);
+            border-radius: 40px;
+            text-align: center;
+        }
+
+        h2 { font-size: 3.5rem; letter-spacing: 15px; margin-bottom: 10px; text-transform: uppercase; }
+        .depth-tag { font-size: 0.7rem; letter-spacing: 5px; opacity: 0.5; margin-bottom: 30px; }
+
+        /* --- THE TRIGGER GRID --- */
+        .link-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+
+        .trigger {
+            background: rgba(255,255,255,0.05);
+            border: 1px solid rgba(255,255,255,0.1);
+            padding: 15px;
+            border-radius: 12px;
+            cursor: pointer;
+            font-size: 0.8rem;
+            transition: 0.3s;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .trigger:hover { background: rgba(255,255,255,0.1); transform: translateY(-3px); border-color: white; }
+
+        /* --- THE REVEAL CONTENT --- */
+        .expansion-content {
+            display: none;
+            text-align: left;
+            padding: 30px;
+            background: rgba(0,0,0,0.6);
+            border-radius: 20px;
+            margin-top: 20px;
+            border-left: 2px solid var(--accent);
+            animation: fadeIn 0.5s ease;
+        }
+
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+
+        /* --- COLOR THEMES --- */
+        #miki-floor h2 { color: var(--miki); text-shadow: 0 0 20px var(--miki); }
+        #star-floor h2 { color: var(--star); text-shadow: 0 0 20px rgba(255, 245, 157, 0.3); }
+        #milo-floor h2 { color: var(--milo); }
+        #chari-floor h2 { color: var(--chari); }
+        #hans-floor h2 { color: var(--hans); font-family: 'Georgia', serif; }
+
+    </style>
+</head>
+<body>
+
+    <nav class="ascend-nav">
+        <a href="#miki-floor" class="nav-pill">Miki</a>
+        <a href="#star-floor" class="nav-pill">Star</a>
+        <a href="#milo-floor" class="nav-pill">Milo</a>
+        <a href="#chari-floor" class="nav-pill">Chari</a>
+        <a href="#hans-floor" class="nav-pill">Hans</a>
+    </nav>
+
+    <section class="floor" id="miki-floor">
+        <div class="glass-panel">
+            <h2>Miki</h2>
+            <div class="depth-tag">SURFACE // COMMS</div>
+            <div class="link-grid">
+                <div class="trigger" onclick="toggle('miki-1')">Interview</div>
+                <div class="trigger" onclick="toggle('miki-2')">Core Logs</div>
+                <div class="trigger" onclick="toggle('miki-3')">Neko-Zine</div>
+                <div class="trigger" onclick="toggle('miki-4')">Canvas Posts</div>
+                <div class="trigger">Data Pending</div>
+            </div>
+            <div id="miki-1" class="expansion-content">
+                <h3>[ ORIGINS ]</h3>
+                <p>Born in a Parisian alley, whisked away to a lab at 24. Retractable claws. Escaped to the Cafe via Pegasus.</p>
+            </div>
+            <div id="miki-2" class="expansion-content">
+                <h3>[ CORE_LOGS ]</h3>
+                <p>Hans is reorganization physical ledgers again. He requested I stop warming my tea on the server heat-sync.</p>
+            </div>
+        </div>
+    </section>
+
+    <section class="floor" id="star-floor">
+        <div class="glass-panel">
+            <h2>Star</h2>
+            <div class="depth-tag">STRATOSPHERE // NAVIGATION</div>
+            <div class="link-grid">
+                <div class="trigger" onclick="toggle('star-1')">Journal</div>
+                <div class="trigger" onclick="toggle('star-2')">Apprentice</div>
+                <div class="trigger" onclick="toggle('star-3')">Cafe Records</div>
+                <div class="trigger">Data Pending</div>
+            </div>
+            <div id="star-1" class="expansion-content">
+                <h3>[ THE JOURNAL ]</h3>
+                <p>Star's romance novels are actually encoded navigation charts. She's tracing wall moldings with UV light.</p>
+            </div>
+        </div>
+    </section>
+
+    <section class="floor" id="milo-floor">
+        <div class="glass-panel">
+            <h2>Milo</h2>
+            <div class="depth-tag">TERRA_FIRMA // ZEN</div>
+            <div class="link-grid">
+                <div class="trigger" onclick="toggle('milo-1')">Herbalism</div>
+                <div class="trigger" onclick="toggle('milo-2')">Ley Lines</div>
+                <div class="trigger" onclick="toggle('milo-3')">Zen Quest</div>
+            </div>
+            <div id="milo-1" class="expansion-content">
+                <h3>[ THE HERBALIST ]</h3>
+                <p>Milo talks to sage. The sage nods back. He maps fault lines to determine where to plant lavender to keep the Earth calm.</p>
+            </div>
+        </div>
+    </section>
+
+    <section class="floor" id="chari-floor">
+        <div class="glass-panel">
+            <h2>Chari</h2>
+            <div class="depth-tag">KINETIC // THERMODYNAMICS</div>
+            <div class="link-grid">
+                <div class="trigger" onclick="toggle('chari-1')">Experiments</div>
+                <div class="trigger" onclick="toggle('chari-2')">Firmware</div>
+            </div>
+            <div id="chari-1" class="expansion-content">
+                <h3>[ LAB NOTES ]</h3>
+                <p>Caught Chari 'hacking' the espresso machine for more pressure. Her cold brew setup is actually an energy filter.</p>
+            </div>
+        </div>
+    </section>
+
+    <section class="floor" id="hans-floor">
+        <div class="glass-panel">
+            <h2>Hans</h2>
+            <div class="depth-tag">BEDROCK // ANCIENT HISTORY</div>
+            <div class="link-grid">
+                <div class="trigger" onclick="toggle('hans-1')">Timeline</div>
+                <div class="trigger" onclick="toggle('hans-2')">Academy</div>
+                <div class="trigger" onclick="toggle('hans-3')">King Louis</div>
+                <div class="trigger" onclick="toggle('hans-4')">Royal Lore</div>
+            </div>
+            <div id="hans-1" class="expansion-content">
+                <h3>[ THE CHRONICLES ]</h3>
+                <p>He recalls the days of jesters and mages. Served as King Louis' right hand. Never ages. Forever 27.</p>
+            </div>
+            <div id="hans-2" class="expansion-content">
+                <h3>[ TEA ETIQUETTE ]</h3>
+                <p>Rule #1: Every person must learn manners. A drop of spilled tea is a drop of spilled discipline.</p>
+            </div>
+        </div>
+    </section>
+
+    <script>
+        function toggle(id) {
+            const el = document.getElementById(id);
+            // Close others in this section? (Optional - for clean view)
+            const parent = el.closest('.glass-panel');
+            const contents = parent.querySelectorAll('.expansion-content');
+            contents.forEach(c => { if(c.id !== id) c.style.display = 'none'; });
+
+            if (el.style.display === "block") {
+                el.style.display = "none";
+            } else {
+                el.style.display = "block";
+                setTimeout(() => {
+                    el.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                }, 100);
+            }
+        }
+    </script>
+</body>
+</html>
