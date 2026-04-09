@@ -1,155 +1,167 @@
 <!DOCTYPE html>
 <html lang="en">
-<head><script src="/.nekoweb-api/static/site.js" defer></script>
+<head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Miki-Neko // Origins</title>
+    <title>Hans // The Scribe of Centuries</title>
     <style>
         :root {
-            --accent: #00d4ff; 
-            --bg: #030305;
-            --text: #e0f7fa;
-            --magic: #bd00ff;
-            --danger: #ff4d4d;
+            --parchment: #f4ecd8;
+            --ink: #1a1a1a;
+            --gold: #c5a059;
+            --iron: #2c2c2c;
         }
 
         body {
-            background-color: var(--bg);
-            color: var(--text);
-            font-family: 'Courier New', Courier, monospace;
+            background-color: #0d0d0d;
+            color: var(--parchment);
+            font-family: 'Georgia', serif; /* A more classic, serif feel */
             padding: 50px;
-            /* Sublte Parisian Alley Vibe */
-            background-image: radial-gradient(circle at center, rgba(0,212,255,0.05) 0%, transparent 70%);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
         }
 
-        .lore-container {
+        /* --- THE RELIC CONTAINER --- */
+        .archive-box {
             max-width: 800px;
-            margin: auto;
-            border: 1px solid #1a1a1a;
-            padding: 40px;
-            background: rgba(0,0,0,0.8);
-            box-shadow: 0 0 50px rgba(0,0,0,1);
+            width: 100%;
+            background: #141414;
+            border: 1px solid var(--iron);
+            padding: 50px;
+            box-shadow: inset 0 0 100px #000, 0 20px 50px rgba(0,0,0,0.5);
             position: relative;
+            overflow: hidden;
         }
 
-        /* Slash Marks across the container */
-        .slash {
-            position: absolute;
-            background: rgba(255, 255, 255, 0.05);
-            height: 2px; width: 150px;
-            transform: rotate(-45deg);
-            top: 20px; right: 20px;
+        /* Gold filigree corners */
+        .archive-box::before {
+            content: '✧';
+            position: absolute; top: 10px; left: 10px; color: var(--gold); font-size: 1.5rem;
+        }
+        .archive-box::after {
+            content: '✧';
+            position: absolute; bottom: 10px; right: 10px; color: var(--gold); font-size: 1.5rem;
         }
 
-        h1 { color: var(--accent); letter-spacing: 5px; margin-bottom: 30px; }
-
-        .question-list {
-            margin-bottom: 40px;
-            border-bottom: 1px solid #222;
+        h1 {
+            font-family: 'Times New Roman', serif;
+            color: var(--gold);
+            text-align: center;
+            letter-spacing: 8px;
+            text-transform: uppercase;
+            border-bottom: 1px solid var(--gold);
             padding-bottom: 20px;
+            margin-bottom: 40px;
         }
 
-        .q-btn {
+        .avatar-frame {
+            width: 120px;
+            height: 120px;
+            border-radius: 50%;
+            border: 2px solid var(--gold);
+            margin: 0 auto 30px;
+            overflow: hidden;
+            background: #000;
+        }
+
+        .avatar-frame img { width: 100%; height: 100%; object-fit: cover; filter: sepia(1) contrast(1.2); }
+
+        /* --- THE SELECTION --- */
+        .fragment-nav {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+            margin-bottom: 40px;
+        }
+
+        .relic-btn {
             background: transparent;
-            border: 1px solid var(--magic);
-            color: var(--magic);
-            padding: 10px 15px;
-            margin: 5px;
+            border: 1px solid var(--iron);
+            color: var(--gold);
+            padding: 15px;
             cursor: pointer;
-            transition: 0.3s;
-            font-family: inherit;
+            transition: 0.5s;
+            font-variant: small-caps;
+            letter-spacing: 2px;
         }
 
-        .q-btn:hover {
-            background: var(--magic);
-            color: white;
-            box-shadow: 0 0 15px var(--magic);
+        .relic-btn:hover {
+            border-color: var(--gold);
+            background: rgba(197, 160, 89, 0.05);
+            transform: translateY(-2px);
         }
 
-        /* The Interview Response Box */
-        #response-box {
-            min-height: 200px;
-            line-height: 1.6;
-            font-size: 1.1rem;
-            position: relative;
+        /* --- THE INK EFFECT --- */
+        #manuscript {
+            min-height: 250px;
+            font-size: 1.2rem;
+            line-height: 1.8;
+            color: var(--parchment);
+            text-align: justify;
+            opacity: 0.9;
         }
 
-        .cursor {
-            display: inline-block;
-            width: 10px; height: 20px;
-            background: var(--accent);
-            animation: blink 0.8s infinite;
-            vertical-align: middle;
+        .ink-bleed {
+            animation: inkFade 2.5s ease-in forwards;
         }
 
-        @keyframes blink { 50% { opacity: 0; } }
-
-        .back-link {
-            margin-top: 50px;
-            display: block;
-            color: var(--accent);
-            text-decoration: none;
-            font-size: 0.8rem;
+        @keyframes inkFade {
+            from { opacity: 0; filter: blur(5px); transform: translateY(5px); }
+            to { opacity: 1; filter: blur(0); transform: translateY(0); }
         }
+
+        .footer-note {
+            margin-top: 40px;
+            font-size: 0.7rem;
+            color: var(--iron);
+            text-align: center;
+            letter-spacing: 1px;
+        }
+
     </style>
 </head>
 <body>
 
-    <div class="lore-container">
-        <div class="slash"></div>
-        <h1>INTERVIEW_LOG: MIKI-NEKO</h1>
+    <div class="archive-box">
+        <div class="avatar-frame">
+            <img src="hans-avatar.jpg" alt="Hans Scribe">
+        </div>
         
-        <div class="question-list">
-            <button class="q-btn" onclick="startInterview('born')">Where were you born?</button>
-            <button class="q-btn" onclick="startInterview('claws')">What did they do to you?</button>
-            <button class="q-btn" onclick="startInterview('escape')">How did you find the Cafe?</button>
-            <button class="q-btn" onclick="startInterview('role')">What do you do now?</button>
+        <h1>The Scribe's Archive</h1>
+        
+        <div class="fragment-nav">
+            <button class="relic-btn" onclick="revealRelic('louis')">The Palace at Versailles</button>
+            <button class="relic-btn" onclick="revealRelic('etiquette')">On Manners & Tea</button>
+            <button class="relic-btn" onclick="revealRelic('solitude')">The Price of Immortality</button>
+            <button class="relic-btn" onclick="revealRelic('yeshua')">The Great Transition</button>
         </div>
 
-        <div id="response-box">
-            <span id="typewriter"></span><span class="cursor" id="cursor"></span>
+        <div id="manuscript">
+            Select a fragment from the days of old...
         </div>
 
-        <a href="index.html" class="back-link">< RETURN TO TERMINAL</a>
+        <div class="footer-note">
+            // DOCUMENTATION RETRIEVED FROM THE INFUSION CAFE VAULT //
+        </div>
     </div>
 
     <script>
-        const loreData = {
-            born: "Paris. A dark alleyway near the Seine. I thought I was being rescued by a 'center'... I was just being picked up like raw material for a lab. Mad scientists don't look like monsters at first. They look like people with cages.",
-            claws: "They mixed things. Human DNA for the 'chaos factor,' they said. Then the claws... retractable, metallic, sharp enough to cut through the firewall of a bank. They wanted an 'Ultimate Chaotic Human.' They got one. But they couldn't control me.",
-            escape: "I escaped at 24. I felt the weight of everyone I left behind... but then He appeared. Yeshua. On a white Pegasus that looked like it was made of light. He didn't just save me; He lifted us all into the Infusion Cafe. A parallel universe. Sanctuary.",
-            role: "I don't work the cafe. I sing. I promote. I run the zine for the cafe and my music. I also invite the curious to our musical events. My server is my territory. It's the only place where no one can put me in a cage ever again."
+        const hansLore = {
+            louis: "King Louis lived in a world of gilded cages and hollow smiles. I was his right hand, the one who drafted the decrees he was too tired to think of. I recall the rustle of heavy silk and the stench of courtly ambition. I did not enjoy it. To be close to power is to be close to the flame—I sought the cold, quiet corners of history instead.",
+            etiquette: "Manners are not mere vanity; they are the geometric lines that keep a society from collapsing into chaos. Every man should know how to pour a cup of tea without trembling. It is a meditation. A drop of spilled tea is a drop of spilled discipline. I shall instruct the public until the last kettle goes cold.",
+            solitude: "I have lost count of the decades. I have watched mages burn their lives away for a single spell and jesters die for a laugh that lasted a second. Solitude is the only companion that doesn't age. People fear the silence; I found my home within it long before I found the Cafe.",
+            yeshua: "When Yeshua arrived, the air tasted like rain after a century of drought. The Pegasus... its wings didn't beat; they rippled through reality itself. He didn't ask us to leave; He simply showed us that we no longer belonged to the dust of the old world. The Infusion Cafe is not a business. It is an anchor."
         };
 
-        let isTyping = false;
-
-        function startInterview(key) {
-            if (isTyping) return;
-            const text = loreData[key];
-            const display = document.getElementById('typewriter');
-            display.innerHTML = "";
-            typeEffect(text, 0);
-        }
-
-        function typeEffect(text, i) {
-            isTyping = true;
-            if (i < text.length) {
-                document.getElementById('typewriter').innerHTML += text.charAt(i);
-                
-                // Add "hesitation" logic: if it's a comma or period, wait longer
-                let delay = 50;
-                if (text.charAt(i) === '.' || text.charAt(i) === ',') {
-                    delay = 600; // Cautious pause
-                } else if (Math.random() > 0.9) {
-                    delay = 200; // Mimics Miki looking over her shoulder
-                }
-
-                setTimeout(() => {
-                    typeEffect(text, i + 1);
-                }, delay);
-            } else {
-                isTyping = false;
-            }
+        function revealRelic(key) {
+            const display = document.getElementById('manuscript');
+            display.classList.remove('ink-bleed');
+            
+            // Force a reflow to restart animation
+            void display.offsetWidth; 
+            
+            display.innerHTML = `<span class="ink-bleed">${hansLore[key]}</span>`;
         }
     </script>
 </body>
