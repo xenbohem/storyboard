@@ -1,0 +1,208 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>The Infusion | The Emerald Path</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Cinzel+Decorative:wght@700&family=Libre+Baskerville:ital,wght@0,400;1,400&display=swap');
+
+        :root {
+            --gold: #d4af37;
+            --mint: #98fb98;
+            --teal: #008080;
+            --true-green: #228b22;
+            --cornflower: #6495ed;
+            --bg-cosmic: radial-gradient(circle at center, #1a0525 0%, #0a0a1a 60%, #000 100%);
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { background: #000; color: #fff; font-family: 'Libre Baskerville', serif; overflow: hidden; }
+
+        /* --- PREAMBLE --- */
+        #loading-screen {
+            position: fixed; inset: 0; display: flex; flex-direction: column;
+            align-items: center; justify-content: center; z-index: 5000;
+            background: #000;
+        }
+
+        .light-text {
+            font-size: 1.2rem; letter-spacing: 5px; opacity: 0;
+            animation: pulseFade 4s forwards;
+        }
+
+        @keyframes pulseFade {
+            0% { opacity: 0; } 20% { opacity: 1; } 80% { opacity: 1; } 100% { opacity: 0; }
+        }
+
+        /* --- GRADIENT LORE CRAWL --- */
+        #lore-crawl {
+            display: none; position: fixed; inset: 0; background: var(--bg-cosmic);
+            z-index: 4000; perspective: 500px;
+        }
+
+        /* The Ombre/Gradient Text Effect */
+        .crawl-container {
+            position: absolute; top: 100%; width: 75%; left: 12.5%;
+            text-align: justify; 
+            animation: moveCrawl 34s linear forwards; /* 4 seconds slower */
+            line-height: 2.2; font-size: 1.5rem;
+            
+            /* Multi-tonal Green Gradient */
+            background: linear-gradient(to bottom, 
+                var(--mint) 0%, 
+                var(--true-green) 50%, 
+                var(--teal) 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            font-weight: bold;
+        }
+
+        @keyframes moveCrawl {
+            from { top: 100%; transform: rotateX(20deg) translateY(0); }
+            to { top: -180%; transform: rotateX(20deg) translateY(-2000px); }
+        }
+
+        /* Stars */
+        .star-field { position: absolute; width: 100%; height: 100%; background: transparent; }
+
+        /* --- THE GOLDEN GATE --- */
+        #gate-screen {
+            display: none; position: fixed; inset: 0; background: #000;
+            z-index: 3000; flex-direction: column; align-items: center; justify-content: center;
+            opacity: 0; transition: opacity 1s ease;
+        }
+
+        .celtic-title {
+            font-family: 'Cinzel Decorative', cursive;
+            font-size: 4rem; color: var(--gold); margin-bottom: 50px;
+            text-shadow: 0 0 25px rgba(212, 175, 55, 0.4);
+        }
+
+        .gate-btn {
+            background: transparent; border: 1px solid var(--gold);
+            color: var(--gold); padding: 15px 45px; font-size: 1.6rem;
+            cursor: pointer; transition: 0.4s; font-family: 'Cinzel Decorative';
+            margin: 0 20px;
+        }
+        .gate-btn:hover { background: var(--gold); color: #000; box-shadow: 0 0 30px var(--gold); }
+
+        /* --- CHAT TRANSITION --- */
+        #chat-room {
+            display: none; position: fixed; inset: 0; background: #0a0a0c;
+            z-index: 2000; flex-direction: column; align-items: center; justify-content: center;
+            padding: 40px;
+        }
+
+        .chat-box {
+            width: 100%; max-width: 650px; background: #121214;
+            padding: 40px; border-radius: 4px; border-left: 3px solid var(--cornflower);
+            box-shadow: 0 20px 50px rgba(0,0,0,0.5);
+        }
+    </style>
+</head>
+<body>
+
+    <div id="loading-screen">
+        <p class="light-text">follow the light</p>
+        <p class="light-text" style="animation-delay: 4s;">for the light is good.</p>
+    </div>
+
+    <div id="lore-crawl">
+        <div class="star-field" id="stars"></div>
+        <div class="crawl-container">
+            <p style="text-align: center; font-size: 2rem; margin-bottom: 50px; letter-spacing: 10px;">PROLOGUE</p>
+            <p>Creation is eternal, a tapestry with no end. Within the walls of the Infusion Cafe, the guardians wait. Star, the romantic navigator. Hans, the redeemed anchor of history. Miki, the digital shield. Milo, the breath of the earth. And Chari, the quiet observer.</p>
+            <br>
+            <p>They are Chimeras—escaped souls marked by the experiments of the lab. Their genetic signatures are their history, but their consciousness is their freedom. They are not property; they are family.</p>
+            <br>
+            <p>As you approach the threshold, remember: the scientists are still watching, still searching. To enter is to join the resistance. To enter is to follow the light...</p>
+        </div>
+    </div>
+
+    <div id="gate-screen">
+        <h2 class="celtic-title">Shall We Begin?</h2>
+        <div>
+            <button class="gate-btn" onclick="startChat()">YEA</button>
+            <button class="gate-btn" onclick="location.reload()">NAY</button>
+        </div>
+    </div>
+
+    <div id="chat-room">
+        <div class="chat-box">
+            <h3 id="speaker" style="color: var(--gold); letter-spacing: 3px; margin-bottom: 20px;">STAR</h3>
+            <p id="message" style="font-size: 1.2rem; line-height: 1.8;">Welcome. We've been expecting a visitor. Before we proceed into the sanctuary, we must know who we are addressing... How many years have you walked this world?</p>
+            
+            <div id="interaction" style="margin-top: 40px;">
+                <input type="number" id="age" style="background: #000; border: 1px solid var(--gold); color: #fff; padding: 10px; font-size: 1.1rem; width: 100px;">
+                <button class="gate-btn" style="font-size: 1rem; padding: 10px 20px;" onclick="checkAge()">Proceed</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Star Generation
+        const starsContainer = document.getElementById('stars');
+        for (let i = 0; i < 100; i++) {
+            const star = document.createElement('div');
+            star.className = 'star';
+            star.style.width = Math.random() * 2 + 'px';
+            star.style.height = star.style.width;
+            star.style.left = Math.random() * 100 + '%';
+            star.style.top = Math.random() * 100 + '%';
+            star.style.position = 'absolute';
+            star.style.background = 'white';
+            star.style.opacity = Math.random();
+            starsContainer.appendChild(star);
+        }
+
+        // Timer Logic
+        setTimeout(() => {
+            document.getElementById('loading-screen').style.display = 'none';
+            document.getElementById('lore-crawl').style.display = 'block';
+            
+            // The crawl takes 34s, let's trigger the gate at 32s for a smooth overlap
+            setTimeout(() => {
+                document.getElementById('lore-crawl').style.transition = 'opacity 1s ease';
+                document.getElementById('lore-crawl').style.opacity = '0';
+                
+                setTimeout(() => {
+                    document.getElementById('lore-crawl').style.display = 'none';
+                    document.getElementById('gate-screen').style.display = 'flex';
+                    setTimeout(() => { document.getElementById('gate-screen').style.opacity = '1'; }, 50);
+                }, 1000);
+            }, 32000);
+        }, 8000);
+
+        function startChat() {
+            document.getElementById('gate-screen').style.display = 'none';
+            document.getElementById('chat-room').style.display = 'flex';
+        }
+
+        function checkAge() {
+            const age = document.getElementById('age').value;
+            const speaker = document.getElementById('speaker');
+            const msg = document.getElementById('message');
+            const interaction = document.getElementById('interaction');
+
+            if (age >= 18) {
+                speaker.innerText = "HANS";
+                speaker.style.color = "var(--cornflower)";
+                msg.innerText = "A mature visitor. I am Hans. We have matters of history and tea to discuss. Are you here for the discipline of a Tea Internship, or do you require Milo's Zen guidance?";
+                interaction.innerHTML = `
+                    <button class="gate-btn" style="font-size: 1rem;" onclick="alert('Proceeding to Tea Apprentice...')">Tea Scribe</button>
+                    <button class="gate-btn" style="font-size: 1rem;" onclick="alert('Proceeding to Milo...')">Zen Help</button>
+                `;
+            } else {
+                speaker.innerText = "CHARI";
+                speaker.style.color = "#ff7eb3";
+                msg.innerText = "Oh, hi! I'm Chari. *pets a rat* You're young, like me! Since we're taking a break from the lab stuff... do you like Coffee or Tea better?";
+                interaction.innerHTML = `
+                    <button class="gate-btn" style="font-size: 1rem;" onclick="alert('Sent to Hans...')">Tea</button>
+                    <button class="gate-btn" style="font-size: 1rem;" onclick="alert('Sent to Star...')">Coffee</button>
+                `;
+            }
+        }
+    </script>
+</body>
+</html>
