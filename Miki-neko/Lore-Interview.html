@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="en">
+<head><script src="/.nekoweb-api/static/site.js" defer></script>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Miki-Neko // Origins</title>
+    <style>
+        :root {
+            --accent: #00d4ff; 
+            --bg: #030305;
+            --text: #e0f7fa;
+            --magic: #bd00ff;
+            --danger: #ff4d4d;
+        }
+
+        body {
+            background-color: var(--bg);
+            color: var(--text);
+            font-family: 'Courier New', Courier, monospace;
+            padding: 50px;
+            /* Sublte Parisian Alley Vibe */
+            background-image: radial-gradient(circle at center, rgba(0,212,255,0.05) 0%, transparent 70%);
+        }
+
+        .lore-container {
+            max-width: 800px;
+            margin: auto;
+            border: 1px solid #1a1a1a;
+            padding: 40px;
+            background: rgba(0,0,0,0.8);
+            box-shadow: 0 0 50px rgba(0,0,0,1);
+            position: relative;
+        }
+
+        /* Slash Marks across the container */
+        .slash {
+            position: absolute;
+            background: rgba(255, 255, 255, 0.05);
+            height: 2px; width: 150px;
+            transform: rotate(-45deg);
+            top: 20px; right: 20px;
+        }
+
+        h1 { color: var(--accent); letter-spacing: 5px; margin-bottom: 30px; }
+
+        .question-list {
+            margin-bottom: 40px;
+            border-bottom: 1px solid #222;
+            padding-bottom: 20px;
+        }
+
+        .q-btn {
+            background: transparent;
+            border: 1px solid var(--magic);
+            color: var(--magic);
+            padding: 10px 15px;
+            margin: 5px;
+            cursor: pointer;
+            transition: 0.3s;
+            font-family: inherit;
+        }
+
+        .q-btn:hover {
+            background: var(--magic);
+            color: white;
+            box-shadow: 0 0 15px var(--magic);
+        }
+
+        /* The Interview Response Box */
+        #response-box {
+            min-height: 200px;
+            line-height: 1.6;
+            font-size: 1.1rem;
+            position: relative;
+        }
+
+        .cursor {
+            display: inline-block;
+            width: 10px; height: 20px;
+            background: var(--accent);
+            animation: blink 0.8s infinite;
+            vertical-align: middle;
+        }
+
+        @keyframes blink { 50% { opacity: 0; } }
+
+        .back-link {
+            margin-top: 50px;
+            display: block;
+            color: var(--accent);
+            text-decoration: none;
+            font-size: 0.8rem;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="lore-container">
+        <div class="slash"></div>
+        <h1>INTERVIEW_LOG: MIKI-NEKO</h1>
+        
+        <div class="question-list">
+            <button class="q-btn" onclick="startInterview('born')">Where were you born?</button>
+            <button class="q-btn" onclick="startInterview('claws')">What did they do to you?</button>
+            <button class="q-btn" onclick="startInterview('escape')">How did you find the Cafe?</button>
+            <button class="q-btn" onclick="startInterview('role')">What do you do now?</button>
+        </div>
+
+        <div id="response-box">
+            <span id="typewriter"></span><span class="cursor" id="cursor"></span>
+        </div>
+
+        <a href="index.html" class="back-link">< RETURN TO TERMINAL</a>
+    </div>
+
+    <script>
+        const loreData = {
+            born: "Paris. A dark alleyway near the Seine. I thought I was being rescued by a 'center'... I was just being picked up like raw material for a lab. Mad scientists don't look like monsters at first. They look like people with cages.",
+            claws: "They mixed things. Human DNA for the 'chaos factor,' they said. Then the claws... retractable, metallic, sharp enough to cut through the firewall of a bank. They wanted an 'Ultimate Chaotic Human.' They got one. But they couldn't control me.",
+            escape: "I escaped at 24. I felt the weight of everyone I left behind... but then He appeared. Yeshua. On a white Pegasus that looked like it was made of light. He didn't just save me; He lifted us all into the Infusion Cafe. A parallel universe. Sanctuary.",
+            role: "I don't work the cafe. I sing. I promote. I run the zine for the cafe and my music. I also invite the curious to our musical events. My server is my territory. It's the only place where no one can put me in a cage ever again."
+        };
+
+        let isTyping = false;
+
+        function startInterview(key) {
+            if (isTyping) return;
+            const text = loreData[key];
+            const display = document.getElementById('typewriter');
+            display.innerHTML = "";
+            typeEffect(text, 0);
+        }
+
+        function typeEffect(text, i) {
+            isTyping = true;
+            if (i < text.length) {
+                document.getElementById('typewriter').innerHTML += text.charAt(i);
+                
+                // Add "hesitation" logic: if it's a comma or period, wait longer
+                let delay = 50;
+                if (text.charAt(i) === '.' || text.charAt(i) === ',') {
+                    delay = 600; // Cautious pause
+                } else if (Math.random() > 0.9) {
+                    delay = 200; // Mimics Miki looking over her shoulder
+                }
+
+                setTimeout(() => {
+                    typeEffect(text, i + 1);
+                }, delay);
+            } else {
+                isTyping = false;
+            }
+        }
+    </script>
+</body>
+</html>
