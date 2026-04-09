@@ -1,0 +1,291 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Miki's Core Log | Chimera Collective</title>
+    <style>
+        :root {
+            --accent: #00d4ff; 
+            --bg: #050505;
+            --text: #e0f7fa;
+            --panel: #0a0a0a;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; scroll-behavior: smooth; }
+        body, html { 
+            background-color: var(--bg); 
+            color: var(--text);
+            font-family: 'Courier New', Courier, monospace;
+        }
+
+        /* --- THE TERMINAL SECTION --- */
+        .terminal-view {
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+            border-bottom: 2px solid var(--accent);
+        }
+
+        /* --- THE FIXED BIOSCAN BANNER --- */
+        .banner-frame {
+            width: 100%;
+            height: 300px;
+            position: relative;
+            background: #000;
+            overflow: hidden;
+            border-bottom: 1px solid var(--accent);
+            cursor: none; 
+        }
+
+        .base-layer {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            filter: hue-rotate(180deg) brightness(0.5) saturate(1.2);
+            position: absolute;
+            top: 0; left: 0;
+            z-index: 1;
+        }
+
+        .reveal-layer {
+            position: absolute;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
+            background-image: url('https://xencafe.nekoweb.org/2026-LIVESTREAM/MIKIS-REALM-ARTPOST/MikiPeeringManically.jpeg');
+            background-size: cover;
+            background-position: center;
+            opacity: 0;
+            z-index: 2;
+            transition: opacity 0.3s ease;
+            clip-path: circle(120px at var(--x, 50%) var(--y, 50%));
+            pointer-events: none;
+        }
+
+        .banner-frame:hover .reveal-layer { opacity: 1; }
+
+        /* --- INTERFACE CONTENT --- */
+        .content-area {
+            flex-grow: 1;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+
+        .web-container {
+            position: relative;
+            margin-bottom: 15px;
+            cursor: help;
+        }
+
+        .spiderweb-icon {
+            font-size: 2.5rem;
+            color: var(--accent);
+            text-shadow: 0 0 10px var(--accent);
+            animation: webPulse 2s infinite alternate;
+        }
+
+        .web-tooltip {
+            visibility: hidden;
+            width: 280px;
+            background-color: rgba(0, 0, 0, 0.95);
+            color: var(--accent);
+            text-align: center;
+            border: 1px solid var(--accent);
+            padding: 15px;
+            position: absolute;
+            z-index: 100;
+            bottom: 125%;
+            left: 50%;
+            transform: translateX(-50%);
+            font-size: 0.8rem;
+        }
+
+        .web-container:hover .web-tooltip { visibility: visible; }
+
+        @keyframes webPulse {
+            from { opacity: 0.4; transform: scale(0.9); }
+            to { opacity: 1; transform: scale(1.1); }
+        }
+
+        .search-container {
+            width: 100%;
+            max-width: 700px;
+            margin-bottom: 30px;
+            text-align: center;
+        }
+
+        #coreSearch {
+            width: 70%;
+            background: #000;
+            border: 1px solid var(--accent);
+            color: var(--accent);
+            padding: 12px;
+            outline: none;
+            font-family: inherit;
+        }
+
+        .access-btn {
+            background: var(--accent);
+            color: black;
+            border: none;
+            padding: 12px 20px;
+            cursor: pointer;
+            font-weight: bold;
+            font-family: inherit;
+        }
+
+        .log-entry {
+            margin-top: 20px;
+            padding: 25px;
+            background: var(--panel);
+            border: 1px solid rgba(0, 212, 255, 0.2);
+            min-height: 150px;
+            text-align: left;
+            font-size: 0.95rem;
+            line-height: 1.6;
+            box-shadow: inset 0 0 15px rgba(0, 0, 0, 0.5);
+        }
+
+        .log-version {
+            color: var(--accent);
+            font-weight: bold;
+            display: block;
+            margin-bottom: 5px;
+            border-bottom: 1px solid rgba(0, 212, 255, 0.2);
+            padding-bottom: 5px;
+        }
+
+        .canvas-trigger {
+            display: inline-block;
+            background: transparent;
+            border: 1px solid var(--accent);
+            color: var(--accent);
+            padding: 15px 30px;
+            text-decoration: none;
+            font-weight: bold;
+            transition: 0.3s;
+        }
+
+        .canvas-trigger:hover { background: var(--accent); color: black; }
+
+        /* --- CANVAS SECTION --- */
+        .canvas-section {
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+            background: #111;
+        }
+
+        .canvas-header {
+            padding: 15px;
+            background: #000;
+            border-bottom: 1px solid var(--accent);
+            display: flex;
+            justify-content: space-between;
+        }
+
+        iframe { width: 100%; height: 100%; border: none; }
+    </style>
+</head>
+<body>
+
+    <div class="terminal-view" id="top">
+        <div class="banner-frame" id="scannerFrame">
+            <img src="https://xencafe.nekoweb.org/2026-LIVESTREAM/MIKIS-REALM-ARTPOST/MikiPeeringManically.jpeg" class="base-layer">
+            <div class="reveal-layer" id="scannerSpot"></div>
+        </div>
+
+        <div class="content-area">
+            <div class="web-container">
+                <div class="spiderweb-icon">🕸</div>
+                <div class="web-tooltip">
+                    <strong>// ARCHIVE ACCESSED</strong><br><br>
+                    Sequential logs detected. Use the terminal below to scan for character history (Hans, Star, Chari) or environmental lore.
+                </div>
+            </div>
+
+            <div class="search-container">
+                <h2 style="color:var(--accent); margin-bottom: 10px; letter-spacing: 2px;">> CORE_LOG_HISTORY_SCANNER</h2>
+                <input type="text" id="coreSearch" placeholder="Requesting bypass key..." onkeydown="if(event.key==='Enter') queryMiki()">
+                <button class="access-btn" onclick="queryMiki()">SCAN ARCHIVE</button>
+                <div id="logResult" class="log-entry">[CORE IDLE: Enter search string to begin extraction...]</div>
+            </div>
+
+            <a href="#canvas" class="canvas-trigger">OPEN WIDE-VIEW CANVAS</a>
+        </div>
+    </div>
+
+    <div class="canvas-section" id="canvas">
+        <div class="canvas-header">
+            <span style="color: var(--accent)">// LIVE CANVAS FEED</span>
+            <a href="#top" style="color: var(--accent); text-decoration: none;">↑ TOP</a>
+          
+        </div>
+        <iframe src="https://padlet.com/embed/hbu3ozs9k8tqlhuy"></iframe>
+    </div>
+
+    <script>
+        const frame = document.getElementById('scannerFrame');
+        const spot = document.getElementById('scannerSpot');
+
+        frame.addEventListener('mousemove', (e) => {
+            const rect = frame.getBoundingClientRect();
+            const x = ((e.clientX - rect.left) / rect.width) * 100;
+            const y = ((e.clientY - rect.top) / rect.height) * 100;
+            spot.style.setProperty('--x', x + '%');
+            spot.style.setProperty('--y', y + '%');
+        });
+
+        // --- SEQUENTIAL LORE DATABASE ---
+        const mikiLore = [
+            { 
+                key: "hans", 
+                v11: "I attempted to upgrade Hans's ledger to a digital tablet. He threatened to ban me from the Earl Grey supply. The man is a luddite, but his tea is efficient.",
+                v12: "Hans is currently reorganizing the physical ledgers. He has requested I stop 'poking around' the server heat-sync to warm my tea. Solitude is his weapon, but I am the silence between his thoughts.",
+                v13: "Currently observing Hans. He is talking to his tea leaves again. I am tracking the resonance. JARring frequency detected."
+            	
+            },
+            { 
+                key: "star", 
+                v11: "Star's romance novels are actually encoded with strange coordinates. I'm not sure if she knows she's reading navigation charts, or if she's just that deep into the plot.",
+                v12: "Star's romance novels contain sub-textual patterns that match the Chimera's original blueprints. Either she's a genius, or the author is one of us. Currently observing her for secondary patterns."
+            },
+            { 
+                key: "chari", 
+                v11: "Caught Chari trying to 'hack' the espresso machine for more pressure. I've locked the firmware. We don't need a steam-powered explosion today.",
+                v12: "Chari keeps leaving sticky notes on the server rack. 'Do not touch - making cold brew.' I'm going to need a bigger firewall. Her determination is impressive, if slightly terrifying."
+            },
+            { 
+                key: "chimera", 
+                v11: "The cafe foundation was laid on a ley line convergence. Milo thinks it's just 'good soil.'",
+                v12: "The Chimera is a living convergence point. Data suggests the magnetic north inside the building fluctuates whenever Hans pours a perfect steep. The building is breathing."
+            }
+        ];
+
+        function queryMiki() {
+            const val = document.getElementById('coreSearch').value.toLowerCase();
+            const res = document.getElementById('logResult');
+            const match = mikiLore.find(e => val.includes(e.key));
+            
+            if(match) {
+                res.innerHTML = `
+                    <span class="log-version">[CORE_LOG_V1.1]</span>
+                    <p style="margin-bottom: 15px;">"${match.v11}"</p>
+                    <span class="log-version">[CORE_LOG_V1.2]</span>
+                    <p>"${match.v12}"</p>
+                     <span class="log-version">[CORE_LOG_V1.3]</span>
+                     <p style="margin-bottom: 15px;">"${match.v13}"
+                    
+                `;
+            } else if (val.includes("secret")) {
+                res.innerHTML = `<span class="log-version">[ENCRYPTED]</span><br>The tea is a distraction; the cards are the key. Miki knows.`;
+            } else {
+                res.innerHTML = `<span style="color:#ff4444">[ERROR]:</span> No sequential data found for '${val}'. Check the spiderweb for valid bypass strings.`;
+            }
+        }
+    </script>
+</body>
+</html>
