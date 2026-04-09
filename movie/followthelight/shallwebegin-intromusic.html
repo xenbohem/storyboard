@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>The Infusion | The Emerald Path</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Cinzel+Decorative:wght@700&family=Libre+Baskerville:ital,wght@0,400;1,400&display=swap');
+
+        :root {
+            --gold: #d4af37;
+            --mint: #98fb98;
+            --teal: #008080;
+            --true-green: #228b22;
+            --cornflower: #6495ed;
+            --bg-cosmic: radial-gradient(circle at center, #1a0525 0%, #0a0a1a 60%, #000 100%);
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { background: #000; color: #fff; font-family: 'Libre Baskerville', serif; overflow: hidden; }
+
+        /* --- PREAMBLE --- */
+        #loading-screen {
+            position: fixed; inset: 0; display: flex; flex-direction: column;
+            align-items: center; justify-content: center; z-index: 5000;
+            background: #000;
+        }
+
+        .light-text {
+            font-size: 1.2rem; letter-spacing: 5px; opacity: 0;
+            animation: pulseFade 4s forwards;
+        }
+
+        @keyframes pulseFade {
+            0% { opacity: 0; } 20% { opacity: 1; } 80% { opacity: 1; } 100% { opacity: 0; }
+        }
+
+        /* --- GRADIENT LORE CRAWL --- */
+        #lore-crawl {
+            display: none; position: fixed; inset: 0; background: var(--bg-cosmic);
+            z-index: 4000; perspective: 500px;
+        }
+
+        .crawl-container {
+            position: absolute; top: 100%; width: 75%; left: 12.5%;
+            text-align: justify; 
+            animation: moveCrawl 34s linear forwards;
+            line-height: 2.2; font-size: 1.5rem;
+            background: linear-gradient(to bottom, var(--mint) 0%, var(--true-green) 50%, var(--teal) 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            font-weight: bold;
+        }
+
+        @keyframes moveCrawl {
+            from { top: 100%; transform: rotateX(20deg) translateY(0); }
+            to { top: -180%; transform: rotateX(20deg) translateY(-2000px); }
+        }
+
+        /* --- THE GOLDEN GATE --- */
+        #gate-screen {
+            display: none; position: fixed; inset: 0; background: #000;
+            z-index: 3000; flex-direction: column; align-items: center; justify-content: center;
+            opacity: 0; transition: opacity 1s ease;
+        }
+
+        .celtic-title {
+            font-family: 'Cinzel Decorative', cursive;
+            font-size: 4rem; color: var(--gold); margin-bottom: 50px;
+            text-shadow: 0 0 25px rgba(212, 175, 55, 0.4);
+        }
+
+        .gate-btn {
+            background: transparent; border: 1px solid var(--gold);
+            color: var(--gold); padding: 15px 45px; font-size: 1.6rem;
+            cursor: pointer; transition: 0.4s; font-family: 'Cinzel Decorative';
+            margin: 0 20px;
+        }
+        .gate-btn:hover { background: var(--gold); color: #000; box-shadow: 0 0 30px var(--gold); }
+
+        /* --- THE TEACUP PLAYER --- */
+        #teacup-player {
+            position: fixed; bottom: 30px; right: 30px;
+            width: 60px; height: 60px; cursor: pointer;
+            z-index: 6000; opacity: 0.6; transition: 0.3s;
+            display: none; /* Only appears at Gate */
+        }
+        #teacup-player:hover { opacity: 1; transform: scale(1.1); }
+
+        /* Simple CSS Teacup Icon */
+        .cup {
+            width: 40px; height: 30px; background: var(--gold);
+            border-radius: 0 0 20px 20px; position: relative;
+            margin-top: 20px;
+        }
+        .handle {
+            width: 15px; height: 15px; border: 3px solid var(--gold);
+            border-radius: 50%; position: absolute; right: -10px; top: 2px;
+        }
+        .steam {
+            position: absolute; top: -15px; left: 10px; width: 2px; height: 10px;
+            background: rgba(255,255,255,0.3); animation: steam 2s infinite;
+        }
+
+        @keyframes steam { 0% { opacity:0; transform:translateY(0); } 50% { opacity:1; } 100% { opacity:0; transform:translateY(-10px); } }
+
+        /* --- CHAT ROOM --- */
+        #chat-room {
+            display: none; position: fixed; inset: 0; background: #0a0a0c;
+            z-index: 2000; flex-direction: column; align-items: center; justify-content: center;
+            padding: 40px;
+        }
+    </style>
+</head>
+<body>
+
+    <audio id="bg-music" loop>
+        <source src="follow_the_light.mp3" type="audio/mpeg">
+        </audio>
+
+    <div id="teacup-player" onclick="toggleMusic()">
+        <div class="steam"></div>
+        <div class="cup"><div class="handle"></div></div>
+    </div>
+
+    <div id="loading-screen">
+        <p class="light-text">follow the light</p>
+        <p class="light-text" style="animation-delay: 4s;">for the light is good.</p>
+    </div>
+
+    <div id="lore-crawl">
+        <div class="crawl-container">
+            <p style="text-align: center; font-size: 2rem; margin-bottom: 50px; letter-spacing: 10px;">PROLOGUE</p>
+            <p>Creation is eternal... [The Lore remains as before]</p>
+            <br>
+            <p>To enter is to join the resistance. To enter is to follow the light...</p>
+        </div>
+    </div>
+
+    <div id="gate-screen">
+        <h2 class="celtic-title">Shall We Begin?</h2>
+        <div>
+            <button class="gate-btn" onclick="startChat()">YEA</button>
+            <button class="gate-btn" onclick="location.reload()">NAY</button>
+        </div>
+    </div>
+
+    <script>
+        const music = document.getElementById('bg-music');
+        const teacup = document.getElementById('teacup-player');
+
+        // Logic to trigger Gate and Music
+        setTimeout(() => {
+            document.getElementById('loading-screen').style.display = 'none';
+            document.getElementById('lore-crawl').style.display = 'block';
+            
+            setTimeout(() => {
+                document.getElementById('lore-crawl').style.transition = 'opacity 1s ease';
+                document.getElementById('lore-crawl').style.opacity = '0';
+                
+                setTimeout(() => {
+                    document.getElementById('lore-crawl').style.display = 'none';
+                    document.getElementById('gate-screen').style.display = 'flex';
+                    teacup.style.display = 'block';
+                    
+                    // Start Music once gate appears
+                    music.play().catch(e => console.log("Autoplay blocked: User must interact first."));
+                    
+                    setTimeout(() => { document.getElementById('gate-screen').style.opacity = '1'; }, 50);
+                }, 1000);
+            }, 32000);
+        }, 8000);
+
+        function toggleMusic() {
+            if (music.paused) {
+                music.play();
+                teacup.style.opacity = "1";
+            } else {
+                music.pause();
+                teacup.style.opacity = "0.4";
+            }
+        }
+
+        function startChat() {
+            document.getElementById('gate-screen').style.display = 'none';
+            // Chat room logic follows...
+        }
+    </script>
+</body>
+</html>
