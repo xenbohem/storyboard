@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>The Chimera Collective | Eternal Nexus</title>
+    <style>
+        :root {
+            --miki: #bd00ff; --star: #fff59d; --milo: #8bc34a; --hans: #c5a059;
+            --accent: #00d4ff; --bg: #050505;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { background-color: var(--bg); color: #e0f7fa; font-family: 'Constantia', serif; overflow: hidden; }
+
+        /* --- THE CRAWL ENTRANCE --- */
+        #intro-container {
+            position: fixed; width: 100%; height: 100%;
+            display: flex; align-items: center; justify-content: center;
+            background: #000; z-index: 2000;
+        }
+
+        .crawl-wrapper {
+            width: 80%; max-width: 800px; height: 100%;
+            perspective: 400px; text-align: justify;
+        }
+
+        .crawl-content {
+            position: relative; top: 100%;
+            transform-origin: 50% 100%;
+            animation: crawl 45s linear forwards;
+            color: var(--accent); line-height: 1.8;
+            font-size: 1.5rem; letter-spacing: 2px;
+        }
+
+        @keyframes crawl {
+            0% { top: 100%; transform: rotateX(25deg) translateY(0); }
+            100% { top: -200%; transform: rotateX(25deg) translateY(-2000px); }
+        }
+
+        /* --- FADE TRANSITION --- */
+        .fade-out { animation: finalFade 3s forwards; }
+        @keyframes finalFade { to { opacity: 0; visibility: hidden; } }
+
+        /* --- THE HEADQUARTERS (Hidden until fade) --- */
+        #main-hq {
+            height: 100vh; overflow-y: auto; overflow-x: hidden;
+            opacity: 0; transition: opacity 3s ease;
+        }
+
+        .floor { min-height: 100vh; display: flex; align-items: center; justify-content: center; padding: 60px 20px; }
+        .glass-panel { width: 100%; max-width: 850px; padding: 50px; background: rgba(255, 255, 255, 0.02); backdrop-filter: blur(20px); border: 1px solid rgba(255, 255, 255, 0.05); }
+        
+        h2 { font-size: 2.5rem; letter-spacing: 10px; text-transform: uppercase; margin-bottom: 20px; font-weight: 300; }
+        .info-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 20px; margin-bottom: 30px; }
+        .info-card { background: rgba(0,0,0,0.3); border: 1px solid rgba(255,255,255,0.05); padding: 20px; cursor: pointer; transition: 0.3s; text-align: center; }
+        .info-card:hover { border-color: var(--accent); }
+        
+        .reveal-box { display: none; margin-top: 20px; padding: 30px; background: rgba(255, 255, 255, 0.01); border-top: 1px solid var(--accent); line-height: 1.8; animation: fadeIn 0.8s ease; }
+        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+
+        .skip-btn {
+            position: fixed; bottom: 20px; right: 20px; z-index: 3000;
+            background: none; border: 1px solid var(--accent); color: var(--accent);
+            padding: 10px; cursor: pointer; opacity: 0.5;
+        }
+    </style>
+</head>
+<body>
+
+    <button class="skip-btn" onclick="skipIntro()">SKIP PREAMBLE</button>
+
+    <div id="intro-container">
+        <div class="crawl-wrapper">
+            <div class="crawl-content">
+                <p style="text-align: center; color: var(--hans); margin-bottom: 50px;">EPISODE I: THE ETERNAL CREATION</p>
+                <p>Creation is eternal, a tapestry with no end and infinite possibilities. We find ourselves reflected in the guardians of the Infusion Cafe—not as players in a game, but as echoes of consciousness navigating the present.</p>
+                <br>
+                <p>The mind is the All. We seek divinity in the reaches of space and the depths of code, yet it remains hidden within the very awareness that seeks it.</p>
+                <br>
+                <p>As you descend into the Nexus, remember: these roles are jurisdictions of the spirit. Hans, the anchor of history. Miki, the voice of the collective. Star, the map of the stars. Milo, the breath of the earth.</p>
+                <br>
+                <p>The archives are open. Proceed with kindness. The data is inconclusive, for the soul cannot be measured...</p>
+            </div>
+        </div>
+    </div>
+
+    <main id="main-hq">
+        <section class="floor" id="hans-floor">
+            <div class="glass-panel">
+                <h2 style="color: var(--hans);">Hans</h2>
+                <div style="color: var(--accent); letter-spacing: 3px; font-size: 0.8rem; margin-bottom: 40px;">HISTORICAL GOVERNANCE</div>
+                <div class="info-grid">
+                    <div class="info-card" onclick="toggle('h1')">The Timeline</div>
+                    <div class="info-card" onclick="toggle('h2')">Governance</div>
+                </div>
+                <div id="h1" class="reveal-box">Hans recalls the days of mages and scribes, serving as the steady hand for King Louis. He has governed through centuries by maintaining the dignity of the ritual.</div>
+                <div id="h2" class="reveal-box">He believes etiquette is the anchor of society. His jurisdiction is the Bedrock—the stabilizing history of the Cafe.</div>
+            </div>
+        </section>
+
+        <section class="floor" id="miki-floor">
+            <div class="glass-panel">
+                <h2 style="color: var(--miki);">Miki</h2>
+                <div style="color: var(--accent); letter-spacing: 3px; font-size: 0.8rem; margin-bottom: 40px;">PUBLIC RELATIONS</div>
+                <div class="info-grid">
+                    <div class="info-card" onclick="toggle('m1')">The Jurisdiction</div>
+                    <div class="info-card" onclick="toggle('m2')">The Journey</div>
+                </div>
+                <div id="m1" class="reveal-box">Miki is the bridge. She manages the Zines, the music, and the digital gates. She ensures the family remains a sanctuary from the noise of the outside.</div>
+                <div id="m2" class="reveal-box">From a Parisian lab to the celestial Cafe, Miki represents the chaotic potential of a soul that refuses to be caged.</div>
+            </div>
+        </section>
+        
+        </main>
+
+    <script>
+        // Transition logic
+        setTimeout(() => {
+            if(!document.getElementById('intro-container').classList.contains('fade-out')) {
+                skipIntro();
+            }
+        }, 40000); // Auto-skip after 40s
+
+        function skipIntro() {
+            document.getElementById('intro-container').classList.add('fade-out');
+            document.getElementById('main-hq').style.opacity = '1';
+            document.body.style.overflow = 'auto';
+            document.querySelector('.skip-btn').style.display = 'none';
+        }
+
+        function toggle(id) {
+            const el = document.getElementById(id);
+            const panel = el.closest('.glass-panel');
+            panel.querySelectorAll('.reveal-box').forEach(box => {
+                if(box.id !== id) box.style.display = 'none';
+            });
+            el.style.display = (el.style.display === 'block') ? 'none' : 'block';
+            if(el.style.display === 'block') el.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        }
+    </script>
+</body>
+</html>
