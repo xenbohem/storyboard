@@ -1,0 +1,279 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Miki's Core Log | The Complete Archive</title>
+    <style>
+        :root {
+            --accent: #00d4ff; 
+            --bg: #050505;
+            --text: #e0f7fa;
+            --panel: #0a0a0a;
+            --magic: #bd00ff;
+            --alert: #ff003c;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; scroll-behavior: smooth; }
+        body, html { 
+            background-color: var(--bg); 
+            color: var(--text);
+            font-family: 'Courier New', Courier, monospace;
+            overflow-x: hidden;
+        }
+
+        /* --- THE BIOSCAN BANNER (TOP LAYER) --- */
+        .banner-frame {
+            width: 100%; height: 300px;
+            position: relative; background: #000;
+            overflow: hidden; border-bottom: 2px solid var(--accent);
+            cursor: none; 
+        }
+
+        .base-layer {
+            width: 100%; height: 100%;
+            object-fit: cover;
+            filter: hue-rotate(180deg) brightness(0.4) saturate(1.2);
+            position: absolute; top: 0; left: 0; z-index: 1;
+        }
+
+        .watermark {
+            position: absolute; bottom: 15px; right: 20px;
+            z-index: 5; color: var(--accent);
+            font-size: 1.2rem; letter-spacing: 3px; opacity: 0.5;
+            text-transform: uppercase; pointer-events: none;
+        }
+
+        .reveal-layer {
+            position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+            background-image: url('chimeracafe-banner-cool.jpg');
+            background-size: cover; background-position: center;
+            opacity: 0; z-index: 10;
+            transition: opacity 0.3s ease;
+            clip-path: circle(90px at var(--x, 55%) var(--y, 35%)); 
+            pointer-events: none;
+        }
+
+        .banner-frame:hover .reveal-layer { opacity: 1; }
+
+        /* --- ZIP-GLITCH FANTASTICAL BUTTON --- */
+        .lore-nav {
+            width: 100%; display: flex; justify-content: center;
+            padding: 25px 0; background: linear-gradient(180deg, rgba(189, 0, 255, 0.1) 0%, transparent 100%);
+        }
+
+        .fantastical-btn {
+            padding: 12px 35px; color: #fff; text-decoration: none;
+            border: 1px solid var(--magic); background: rgba(0,0,0,0.9);
+            letter-spacing: 2px; transition: 0.2s; position: relative;
+            font-weight: bold; text-transform: uppercase;
+            box-shadow: 0 0 15px rgba(189, 0, 255, 0.3);
+            overflow: hidden;
+        }
+
+        /* The "Zip" Scanline */
+        .fantastical-btn::after {
+            content: '';
+            position: absolute; top: 0; left: -100%;
+            width: 100%; height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.4), transparent);
+            transition: 0.4s;
+        }
+
+        .fantastical-btn:hover {
+            animation: glitchShake 0.3s infinite;
+            border-color: var(--accent);
+            color: var(--accent);
+        }
+
+        .fantastical-btn:hover::after {
+            left: 100%;
+            transition: 0.3s;
+        }
+
+        @keyframes glitchShake {
+            0% { transform: translate(0); }
+            20% { transform: translate(-2px, 2px); }
+            40% { transform: translate(-2px, -2px); }
+            60% { transform: translate(2px, 2px); }
+            80% { transform: translate(2px, -2px); }
+            100% { transform: translate(0); }
+        }
+
+        /* --- SCROLLABLE TERMINAL WINDOW --- */
+        .log-entry {
+            margin-top: 20px; width: 100%; max-width: 700px;
+            background: var(--panel); border: 1px solid rgba(0, 212, 255, 0.2);
+            height: 400px; 
+            position: relative; overflow-y: auto; overflow-x: hidden;
+            display: flex; flex-direction: column;
+        }
+
+        .log-entry::-webkit-scrollbar { width: 6px; }
+        .log-entry::-webkit-scrollbar-thumb { background: var(--accent); border-radius: 3px; }
+
+        .static-container {
+            width: 100%; height: 100%; position: sticky; top: 0;
+            background: #000; display: flex; align-items: center; justify-content: center;
+            z-index: 2;
+        }
+
+        .tv-static {
+            position: absolute; width: 100%; height: 100%;
+            background: url('https://media.giphy.com/media/oEI9uWUicGvRQ06K1W/giphy.gif');
+            background-size: cover; opacity: 0.12; mix-blend-mode: screen;
+        }
+
+        .standby-msg {
+            color: var(--accent); letter-spacing: 5px; font-weight: bold;
+            animation: standbyGlitch 0.2s infinite alternate;
+        }
+
+        @keyframes standbyGlitch { from { opacity: 0.7; transform: skewX(5deg); } to { opacity: 1; transform: skewX(-5deg); } }
+
+        .decrypted-content { width: 100%; padding: 25px; display: none; flex-direction: column; text-align: left; }
+        .vol-block { opacity: 0; transition: 0.8s; margin-bottom: 25px; border-left: 3px solid var(--magic); padding-left: 15px; }
+        .vol-block.reveal { opacity: 1; }
+        .vol-header { color: var(--magic); font-size: 0.75rem; font-weight: bold; margin-bottom: 5px; opacity: 0.8; }
+
+        /* --- LAYOUT --- */
+        .content-area { display: flex; flex-direction: column; align-items: center; padding: 40px; }
+        #coreSearch { width: 70%; background: #000; border: 1px solid var(--accent); color: var(--accent); padding: 12px; outline: none; font-family: inherit; }
+        .access-btn { background: var(--accent); color: black; border: none; padding: 12px 20px; cursor: pointer; font-weight: bold; }
+
+        #scanLine {
+            position: fixed; top: 0; left: 0; width: 100%; height: 4px;
+            background: var(--magic); box-shadow: 0 0 20px var(--magic);
+            z-index: 100; display: none;
+        }
+
+        @keyframes scanDown { 0% { top: 0; } 100% { top: 100%; } }
+
+        .padlet-section { height: 100vh; width: 100%; background: #111; border-top: 2px solid var(--accent); }
+        .disclaimer { padding: 40px; text-align: center; font-size: 0.7rem; color: #444; line-height: 1.6; }
+
+    </style>
+</head>
+<body id="mainBody">
+
+    <div id="scanLine"></div>
+
+    <div class="banner-frame" id="scannerFrame">
+        <img src="chimeracafe-banner-cool.jpg" class="base-layer">
+        <div class="watermark">MIKI-NEKO // CORE_ID</div>
+        <div class="reveal-layer" id="scannerSpot"></div>
+    </div>
+
+    <div class="lore-nav">
+        <a href="miki-lore.html" class="fantastical-btn">✦ Access Personal Lore ✦</a>
+    </div>
+
+    <div class="content-area">
+        <div class="search-container" style="width:100%; max-width:700px; text-align:center;">
+            <h2 id="termHeader" style="color:var(--accent); margin-bottom: 15px; letter-spacing: 3px;">> CORE_SECURE_OS_v2.0</h2>
+            <input type="text" id="coreSearch" placeholder="Identity bypass (Hans, Star, Milo, Chari)..." onkeydown="if(event.key==='Enter') queryMiki()">
+            <button class="access-btn" onclick="queryMiki()">SCAN ARCHIVE</button>
+            
+            <div id="logResult" class="log-entry">
+                <div class="static-container" id="standbyScreen">
+                    <div class="tv-static"></div>
+                    <div class="standby-msg">[ SYSTEM_STANDBY ]</div>
+                </div>
+                <div class="decrypted-content" id="dataScreen"></div>
+            </div>
+        </div>
+    </div>
+
+    <div class="padlet-section" id="canvas">
+        <iframe src="https://padlet.com/embed/hbu3ozs9k8tqlhuy" style="width:100%; height:100%; border:none;"></iframe>
+    </div>
+
+    <div class="disclaimer">
+        © 2026 Chimera Collective. All Rights Reserved.<br>
+        // NOTICE: This interface is a work of fiction. Characters and logs are for storytelling purposes.
+    </div>
+
+    <script>
+        // Banner Tracking
+        const frame = document.getElementById('scannerFrame');
+        const spot = document.getElementById('scannerSpot');
+        frame.addEventListener('mousemove', (e) => {
+            const rect = frame.getBoundingClientRect();
+            spot.style.setProperty('--x', ((e.clientX - rect.left) / rect.width) * 100 + '%');
+            spot.style.setProperty('--y', ((e.clientY - rect.top) / rect.height) * 100 + '%');
+        });
+
+        // FULL COMPILED LORE
+        const mikiLore = [
+            {
+                key: "hans",
+                v11: "Hans's ledger is now digital. He is not happy.", 
+                v12: "Spotted Hans trying to 'reboot' the server with a copper kettle. Sibling status: Jarring.",
+                v13: "He claims the tea tells him when the 'intruders' are near. I checked the sensors. He's right. How?",
+                v14: "Hans has been staring at the same page of the ledger for three hours. He isn't reading; he's listening to the paper."
+            },
+            { 
+                key: "star", 
+                v11: "Star's romance novels are actually encoded with strange coordinates.",
+                v12: "Star's romance novels contain sub-textual patterns that match the Chimera's original blueprints.",
+                v13: "Caught Star tracing the wall molding with a UV light. She whispered something about 'The Seventh Volume.'",
+                v14: "She reads navigation charts like poetry. I suspect she isn't looking for a place, but a specific moment in time."
+            },
+            { 
+                key: "chari", 
+                v11: "Caught Chari trying to 'hack' the espresso machine for more pressure. I've locked the firmware.",
+                v12: "Chari keeps leaving sticky notes on the server rack. 'Do not touch - making cold brew.'",
+                v13: "She successfully bypassed my Espresso-Lock using a literal paperclip and a piece of gum. Impressive. Terrifying.",
+                v14: "Observing Chari's 'Cold Brew' setup. It's not coffee; it's a filtration system for the local ley line runoff. She's cleaning the energy."
+            },
+            { 
+                key: "milo", 
+                v11: "Milo is currently talking to the sage plants. The sage plants appear to be nodding. Investigating audio anomalies.",
+                v12: "Milo explained that the Cafe wasn't 'bought,' it was 'awakened.' He cited a conversation with Yeshua. I have no record of a Yeshua on the guest list.",
+                v13: "He spent the morning mapping the fault lines in the garden. He says the Earth is 'shifting its weight' and we need more lavender to keep it calm.",
+                v14: "Milo looked directly into my primary camera lens today and told me to 'rest my processors.' He knows I'm watching. He isn't even mad."
+            },
+            { 
+                key: "chimera", 
+                v11: "The cafe foundation was laid on a ley line convergence. Milo thinks it's just 'good soil.'",
+                v12: "The Chimera is a living convergence point. The building is breathing.",
+                v13: "Structural analysis shows the walls are reinforced with a material that vibrates at 432Hz. This shouldn't be physically possible for 1920s masonry.",
+                v14: "The basement door only unlocks when the barometric pressure matches the year 1924. We are currently 'anchored' in the present by Hans's tea timer."
+            }
+        ];
+
+        function queryMiki() {
+            const val = document.getElementById('coreSearch').value.toLowerCase();
+            const standby = document.getElementById('standbyScreen');
+            const dataScreen = document.getElementById('dataScreen');
+            const scan = document.getElementById('scanLine');
+            const match = mikiLore.find(e => val.includes(e.key));
+
+            if(!match) return;
+
+            scan.style.display = "block";
+            scan.style.animation = "scanDown 1.2s ease-in-out";
+
+            setTimeout(() => {
+                standby.style.display = "none";
+                dataScreen.style.display = "flex";
+                scan.style.display = "none";
+
+                let contentHTML = "";
+                let versions = Object.keys(match).filter(k => k !== 'key').sort();
+                
+                versions.forEach((v, i) => {
+                    let vLabel = v.replace('v', '').split('').join('.');
+                    contentHTML += `<div class="vol-block" id="block-${i}"><span class="vol-header">// CORE_LOG_V${vLabel}</span><br><p>"${match[v]}"</p></div>`;
+                });
+                
+                dataScreen.innerHTML = contentHTML;
+
+                versions.forEach((v, i) => {
+                    setTimeout(() => { document.getElementById(`block-${i}`).classList.add('reveal'); }, 400 * (i + 1));
+                });
+            }, 1000);
+        }
+    </script>
+</body>
+</html>
