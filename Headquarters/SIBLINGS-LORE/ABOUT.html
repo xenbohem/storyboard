@@ -1,0 +1,217 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>The Collective | Eternal Memory Bank</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Libre+Baskerville:ital,wght@0,400;0,700&family=Inter:wght@300;400;600&display=swap');
+
+        :root {
+            --bg: #0d0e10;
+            --panel: #141619;
+            --text-main: #d8d8d8;
+            --text-dim: #8e9092;
+            
+            /* The Genetic Signatures */
+            --star: #a370f7;       /* Purple - Romantic Goth */
+            --chari: #ff7eb3;      /* Soft Pink - Support Signature */
+            --milo: #98fb98;       /* Mint Green - Zen Garden */
+            --miki: #ccff00;       /* Neon Yellow - Rockstar Security */
+            --hans: #6495ed;       /* Cornflower Blue - Scribe/Vampire */
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        
+        body { 
+            background-color: var(--bg); 
+            color: var(--text-main); 
+            font-family: 'Inter', sans-serif;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            min-height: 100vh;
+        }
+
+        header {
+            width: 100%;
+            padding: 50px 20px;
+            text-align: center;
+        }
+
+        h1 {
+            font-family: 'Libre Baskerville', serif;
+            font-weight: 400;
+            letter-spacing: 6px;
+            text-transform: uppercase;
+            font-size: 1.1rem;
+            color: var(--text-dim);
+            opacity: 0.8;
+        }
+
+        /* --- SELECTOR DIAL --- */
+        .selector {
+            display: flex;
+            gap: 12px;
+            margin-bottom: 40px;
+            flex-wrap: wrap;
+            justify-content: center;
+            max-width: 900px;
+        }
+
+        .select-btn {
+            background: transparent;
+            border: 1px solid rgba(255,255,255,0.05);
+            color: var(--text-dim);
+            padding: 10px 20px;
+            cursor: pointer;
+            font-size: 0.7rem;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            transition: 0.3s;
+        }
+
+        .btn-star.active { border-color: var(--star); color: var(--star); }
+        .btn-chari.active { border-color: var(--chari); color: var(--chari); }
+        .btn-milo.active { border-color: var(--milo); color: var(--milo); }
+        .btn-miki.active { border-color: var(--miki); color: var(--miki); }
+        .btn-hans.active { border-color: var(--hans); color: var(--hans); }
+
+        /* --- CONTENT DISPLAY --- */
+        .content-display {
+            width: 90%;
+            max-width: 750px;
+            background: var(--panel);
+            padding: 60px;
+            border-radius: 8px;
+            border: 1px solid rgba(255,255,255,0.03);
+            box-shadow: 0 30px 60px rgba(0,0,0,0.5);
+            margin-bottom: 60px;
+            position: relative;
+        }
+
+        .genetic-stripe {
+            position: absolute;
+            top: 0; left: 0; width: 4px; height: 100%;
+            transition: 0.5s;
+        }
+
+        .character-title {
+            font-family: 'Libre Baskerville', serif;
+            font-size: 2.8rem;
+            margin-bottom: 5px;
+            font-weight: 400;
+        }
+
+        .role-desc {
+            font-size: 0.8rem;
+            letter-spacing: 3px;
+            text-transform: uppercase;
+            margin-bottom: 30px;
+            opacity: 0.6;
+        }
+
+        .bio-text {
+            font-size: 1.1rem;
+            line-height: 1.8;
+            color: var(--text-main);
+            font-weight: 300;
+        }
+
+        .traits {
+            margin-top: 25px;
+            font-size: 0.85rem;
+            font-style: italic;
+            color: var(--text-dim);
+            border-top: 1px solid rgba(255,255,255,0.05);
+            padding-top: 20px;
+        }
+
+        footer { padding-bottom: 40px; display: flex; gap: 20px; }
+        footer a { color: var(--text-dim); text-decoration: none; font-size: 0.7rem; letter-spacing: 1px; }
+
+    </style>
+</head>
+<body>
+
+    <header>
+        <h1>The Eternal Memory Bank</h1>
+    </header>
+
+    <nav class="selector">
+        <button class="select-btn btn-star active" onclick="show('star', this)">Star</button>
+        <button class="select-btn btn-chari" onclick="show('chari', this)">Chari</button>
+        <button class="select-btn btn-miki" onclick="show('miki', this)">Miki</button>
+        <button class="select-btn btn-milo" onclick="show('milo', this)">Milo</button>
+        <button class="select-btn btn-hans" onclick="show('hans', this)">Hans</button>
+    </nav>
+
+    <main class="content-display" id="display-area">
+        <div id="stripe" class="genetic-stripe" style="background: var(--star);"></div>
+        
+        <h2 class="character-title" id="char-name" style="color: var(--star);">Star</h2>
+        <p class="role-desc" id="char-role">Cafe Owner & Literary Navigator</p>
+        
+        <div class="bio-text" id="char-bio">
+            A literary romantic-goth with a penchant for exotic kimonos and gypsy-style garb. Born to a British father and Japanese mother, Star is a Chimera who bridges the gap between feline elegance and human likeness. She is the fierce protector of her sister, Chari, and the heart of the Infusion Cafe.
+        </div>
+        
+        <div class="traits" id="char-traits">
+            Heritage: British/Japanese Cat Hybrid | Age: 23 | DNA Signature: Purple
+        </div>
+    </main>
+
+    <footer>
+        <a href="#">THE DISCORD PORTAL</a>
+        <a href="#">THE COLLECTIVE TWITTER</a>
+        <a href="#">ENCRYPTED STATUS</a>
+    </footer>
+
+    <script>
+        const lore = {
+            star: {
+                name: "Star", role: "Cafe Owner & Literary Navigator", color: "var(--star)",
+                bio: "A literary romantic-goth with a penchant for exotic kimonos and gypsy-style garb. Born to a British father and Japanese mother, Star is a Chimera who bridges the gap between feline elegance and human likeness. She is the fierce protector of her sister, Chari, and the heart of the Infusion Cafe.",
+                traits: "Heritage: British/Japanese Cat Hybrid | Age: 23 | DNA Signature: Purple"
+            },
+            chari: {
+                name: "Chari", role: "Apprentice & Watcher", color: "var(--chari)",
+                bio: "Star's biological sister and apprentice. Though she battles heavy anxiety from the lab events, Chari is incredibly crafty, observing the world with a quiet, sharp intelligence. She is rarely seen without her two support rats, who provide a anchor for her in moments of stress.",
+                traits: "Support: Two White Rats | Age: 15 | DNA Signature: Soft Pink"
+            },
+            miki: {
+                name: "Miki", role: "Security & Resident Rockstar", color: "var(--miki)",
+                bio: "Snarky, bold, and fiercely protective of animal rights. Miki is the Cafe’s shield, a 'rockstar' with a deep affinity for cyborg tech. Having lived with the kittens in the lab, she views Milo and Hans as her true siblings. She handles the server security with a heart for the vulnerable.",
+                traits: "Affiliation: Lab Sibling | Disposition: Rockstar Snark | DNA Signature: Neon Yellow"
+            },
+            milo: {
+                name: "Milo", role: "Gardener & Spiritual Buffer", color: "var(--milo)",
+                bio: "The soft-spoken gardener of the Collective. Milo finds his peace in meditation and the tending of the Cafe’s soil. He receives sound advice through his connection with Yeshua, acting as the spiritual grounding for the group. He focuses on the 'All' to keep the trauma of the lab at bay.",
+                traits: "Connection: Guided by Yeshua | Focus: Earth & Spirit | DNA Signature: Mint Green"
+            },
+            hans: {
+                name: "Hans", role: "Historical Scribe & Tea Snob", color: "var(--hans)",
+                bio: "A redeemed vampire and a man of uncompromising culture. Hans finds his sanity in Earl Grey and Shakespeare. He is a 'tech-allergic' tea snob who views a perfectly brewed cup as a divine right. He remains the unwavering anchor of etiquette in a chaotic world.",
+                traits: "Legacy: Redeemed Vampire | Culture: Tea & Shakespeare | DNA Signature: Cornflower Blue"
+            }
+        };
+
+        function show(key, btn) {
+            document.querySelectorAll('.select-btn').forEach(b => b.classList.remove('active'));
+            btn.classList.add('active');
+            const data = lore[key];
+            const display = document.getElementById('display-area');
+            display.style.opacity = 0;
+            setTimeout(() => {
+                document.getElementById('char-name').innerText = data.name;
+                document.getElementById('char-name').style.color = data.color;
+                document.getElementById('stripe').style.background = data.color;
+                document.getElementById('char-role').innerText = data.role;
+                document.getElementById('char-bio').innerText = data.bio;
+                document.getElementById('char-traits').innerText = data.traits;
+                display.style.opacity = 1;
+            }, 300);
+        }
+    </script>
+</body>
+</html>
