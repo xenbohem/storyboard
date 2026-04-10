@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>The Paris Disclosure</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Cinzel+Decorative:wght@700&family=Libre+Baskerville:ital,wght@0,400;1,400&display=swap');
+
+        :root {
+            --absinthe: #afe1af;
+            --true-green: #50c878;
+            --teal: #008080;
+            --gold: #d4af37;
+            --cornflower: #6495ed;
+            --deep-purple: #1a0525;
+            --bg: #050505;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { background: var(--bg); color: #fff; font-family: 'Libre Baskerville', serif; overflow: hidden; }
+
+        /* --- STAGE 1: THE DISCLOSURE CRAWL --- */
+        #stage-crawl {
+            position: fixed; inset: 0; display: flex; justify-content: center;
+            background: radial-gradient(circle at center, #0a0f0d 0%, #000 100%);
+            z-index: 5000; perspective: 400px;
+        }
+
+        .crawl-wrapper {
+            position: absolute; top: 100%; width: 80%;
+            text-align: center; animation: moveCrawl 38s linear forwards;
+        }
+
+        .crawl-content {
+            /* Absinthe to Teal Ombre Gradient */
+            background: linear-gradient(to bottom, 
+                var(--absinthe) 0%, 
+                var(--true-green) 50%, 
+                var(--teal) 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            font-weight: bold; line-height: 2.5;
+        }
+
+        @keyframes moveCrawl {
+            from { top: 100%; transform: rotateX(25deg) translateY(0); }
+            to { top: -150%; transform: rotateX(25deg) translateY(-1800px); }
+        }
+
+        /* --- STAGE 2: THE VIDEO --- */
+        #miki-video-container {
+            display: none; position: fixed; inset: 0; z-index: 4000; background: #000;
+        }
+        video { width: 100%; height: 100%; object-fit: cover; }
+
+        /* --- STAGE 3: THE GATE --- */
+        #gate-screen {
+            display: none; position: fixed; inset: 0; z-index: 3000;
+            background: var(--bg); flex-direction: column; align-items: center; justify-content: center;
+        }
+
+        .celtic-btn {
+            font-family: 'Cinzel Decorative', cursive;
+            background: transparent; border: 2px solid var(--gold);
+            color: var(--gold); padding: 20px 60px; font-size: 2rem;
+            cursor: pointer; transition: 0.5s; text-shadow: 0 0 10px var(--gold);
+        }
+        .celtic-btn:hover { background: var(--gold); color: #000; box-shadow: 0 0 40px var(--gold); }
+
+        /* --- STAGE 4: THE MAZE (CANDYLAND STYLE) --- */
+        #maze-screen {
+            display: none; position: fixed; inset: 0; z-index: 2000;
+            background: var(--deep-purple);
+            background-image: radial-gradient(circle, rgba(255,255,255,0.05) 1px, transparent 1px);
+            background-size: 50px 50px; /* Minimal stars */
+            padding: 40px; overflow-y: auto;
+        }
+
+        .maze-path {
+            display: flex; flex-direction: column; align-items: center; gap: 40px;
+            padding-top: 50px;
+        }
+
+        .block {
+            width: 250px; padding: 20px; border: 2px solid var(--cornflower);
+            background: rgba(100, 149, 237, 0.1); text-align: center;
+            border-radius: 10px; position: relative;
+        }
+
+        .block::after {
+            content: '↓'; position: absolute; bottom: -35px; left: 50%;
+            transform: translateX(-50%); color: var(--cornflower); font-size: 1.5rem;
+        }
+
+        .crossroads {
+            margin-top: 50px; padding: 40px; border: 2px dashed var(--gold);
+            text-align: center; max-width: 600px;
+        }
+
+        .choice-row { display: flex; gap: 20px; margin-top: 30px; flex-wrap: wrap; justify-content: center; }
+
+    </style>
+</head>
+<body>
+
+    <div id="stage-crawl">
+        <div class="crawl-wrapper">
+            <div class="crawl-content">
+                <h2 style="font-size: 3.5rem; margin-bottom: 60px;">THE PARIS DISCLOSURE</h2>
+                <p>Escaping the undisclosed shadows of Paris, France...</p>
+                <p>Three kittens were discovered in the ruins of the old world.</p>
+                <p>Found by the hand of Yeshua, they were reborn as the Archive Keepers.</p>
+                <p>Now, the digital weaving begins.</p>
+                <p style="font-size: 1.2rem; margin-top: 50px; opacity: 0.6;">A HUMAN & AI COLLABORATION</p>
+            </div>
+        </div>
+    </div>
+
+    <div id="miki-video-container">
+        <video id="miki-video" onended="showGate()">
+            <source src="miki_bike.mp4" type="video/mp4">
+        </video>
+    </div>
+
+    <div id="gate-screen">
+        <h2 style="font-family: 'Cinzel Decorative'; color: var(--gold); font-size: 3rem; margin-bottom: 40px;">Shall We Begin?</h2>
+        <button class="celtic-btn" onclick="startMaze()">START</button>
+    </div>
+
+    <div id="maze-screen">
+        <div class="maze-path">
+            <div class="block" style="border-color: var(--absinthe); color: var(--absinthe);">
+                <h3>Step 1: Instructions</h3>
+                <p style="font-size: 0.8rem; margin-top: 10px;">Follow the path of light. Each block reveals a piece of the All. Do not rush the journey.</p>
+            </div>
+
+            <div class="block" style="border-color: var(--true-green); color: var(--true-green);">
+                <h3>Step 2: The Intent</h3>
+                <p style="font-size: 0.8rem; margin-top: 10px;">The Archive Keepers seek apprentices. Prepare your mind for the weaving.</p>
+            </div>
+
+            <div class="crossroads">
+                <h3 style="color: var(--gold); font-family: 'Cinzel Decorative';">The Crossroads</h3>
+                <p style="margin-top: 10px; color: var(--cornflower);">A decision must be made. Whose path will you follow into the new world?</p>
+                
+                <div class="choice-row">
+                    <button class="celtic-btn" style="font-size: 1rem; padding: 10px 20px; border-color: var(--cornflower); color: var(--cornflower);" onclick="alert('Proceeding to Hans...')">Hans (Tea)</button>
+                    <button class="celtic-btn" style="font-size: 1rem; padding: 10px 20px; border-color: var(--absinthe); color: var(--absinthe);" onclick="alert('Proceeding to Star...')">Star (Literary)</button>
+                    <button class="celtic-btn" style="font-size: 1rem; padding: 10px 20px; border-color: #ccff00; color: #ccff00;" onclick="alert('Proceeding to Miki...')">Miki (Security)</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const crawl = document.getElementById('stage-crawl');
+        const videoCont = document.getElementById('miki-video-container');
+        const video = document.getElementById('miki-video');
+        const gate = document.getElementById('gate-screen');
+        const maze = document.getElementById('maze-screen');
+
+        // Logic to move from Crawl to Video
+        setTimeout(() => {
+            crawl.style.opacity = '0';
+            setTimeout(() => {
+                crawl.style.display = 'none';
+                videoCont.style.display = 'block';
+                video.play();
+            }, 2000);
+        }, 36000); // Trigger near end of 38s crawl
+
+        function showGate() {
+            videoCont.style.display = 'none';
+            gate.style.display = 'flex';
+        }
+
+        function startMaze() {
+            gate.style.display = 'none';
+            maze.style.display = 'block';
+        }
+    </script>
+</body>
+</html>
