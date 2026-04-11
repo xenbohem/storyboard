@@ -1,0 +1,264 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>The Archive Nexus | Infinite Loop</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Vampiro+One&family=Klee+One:wght@400;600&display=swap');
+
+        :root {
+            --deep-purple: #1a0b2e;
+            --cornflower: #6495ed;
+            --miki-neon: #ccff00;
+            --soft-text: #e0e0e0;
+            --tile-bg: rgba(100, 149, 237, 0.05);
+        }
+
+        body, html {
+            margin: 0; padding: 0;
+            background-color: #000;
+            color: var(--soft-text);
+            font-family: 'Klee One', cursive;
+            overflow: hidden; height: 100%;
+        }
+
+        /* --- SAGA OVERLAY --- */
+        #saga-overlay {
+            position: fixed; top: 0; left: 0;
+            width: 100%; height: 100%;
+            background: radial-gradient(circle, #2e1a47 0%, #0d0415 100%);
+            display: flex; flex-direction: column;
+            align-items: center; justify-content: center;
+            z-index: 100; transition: opacity 2.5s ease;
+        }
+
+        .saga-title {
+            font-family: 'Vampiro One'; font-size: 3.5rem;
+            color: var(--cornflower); text-align: center;
+        }
+
+        .saga-text {
+            max-width: 650px; text-align: center; font-size: 1.1rem;
+            line-height: 1.8; color: #b0b0b0; margin: 20px 0;
+        }
+
+        /* --- MAZE CONTAINER --- */
+        #game-container {
+            display: none; flex-direction: column; height: 100vh;
+            opacity: 0; transition: opacity 2s ease;
+        }
+
+        header {
+            background: rgba(0, 0, 0, 0.8); padding: 15px 40px;
+            display: flex; justify-content: space-between;
+            border-bottom: 2px solid var(--cornflower);
+            font-family: 'Vampiro One'; color: var(--cornflower);
+        }
+
+        .dashboard {
+            display: flex; flex: 1; padding: 20px; gap: 40px;
+            align-items: center; justify-content: center;
+        }
+
+        #game-board {
+            display: grid; grid-template-columns: repeat(5, 80px);
+            gap: 12px; padding: 20px; background: rgba(0,0,0,0.3);
+            border-radius: 15px; border: 1px solid rgba(100, 149, 237, 0.2);
+        }
+
+        .tile {
+            width: 80px; height: 80px; background: var(--tile-bg);
+            border: 1px solid rgba(100, 149, 237, 0.15);
+            display: flex; align-items: center; justify-content: center;
+            font-size: 1rem; color: rgba(100, 149, 237, 0.2);
+            border-radius: 8px; transition: 0.5s ease;
+        }
+
+        .tile.active { 
+            background: var(--cornflower); color: #000; 
+            box-shadow: 0 0 25px var(--cornflower); font-weight: 600; 
+        }
+
+        .tile.visited { border-color: rgba(100, 149, 237, 0.5); }
+
+        #message-box {
+            background: rgba(15, 5, 30, 0.9); border: 1px solid var(--cornflower);
+            padding: 35px; border-radius: 15px; min-height: 320px; width: 450px;
+            display: flex; flex-direction: column; justify-content: center;
+        }
+
+        .game-btn {
+            background: transparent; border: 1px solid var(--cornflower);
+            color: var(--cornflower); padding: 10px 20px; cursor: pointer;
+            font-family: 'Klee One'; font-weight: 600; border-radius: 5px;
+            margin: 5px; transition: 0.4s;
+        }
+        
+        .game-btn:hover { background: var(--cornflower); color: #1a0b2e; }
+
+        input { 
+            background: #000; border: 1px solid var(--miki-neon); color: var(--miki-neon); 
+            padding: 10px; width: 70%; border-radius: 5px; margin-top: 15px; 
+            font-family: 'Klee One'; text-align: center; align-self: center;
+        }
+    </style>
+</head>
+<body>
+
+    <div id="saga-overlay">
+        <h1 class="saga-title">The Original Saga</h1>
+        <p class="saga-text" id="intro-para">
+            Four siblings, one Archive, and a world built from raw code and ancient grace. 
+            The journey to redemption begins now.
+        </p>
+        <button class="game-btn" id="start-node" style="font-size: 1.4rem; padding: 10px 40px;" onclick="begin()">Enter the Nexus</button>
+    </div>
+
+    <div id="game-container">
+        <header>
+            <span id="header-title">ARCHIVE NEXUS</span>
+            <span id="player-title">INITIATE</span>
+        </header>
+
+        <div class="dashboard">
+            <div id="game-board"></div>
+            <div id="message-box">
+                <p id="game-text"></p>
+                <div id="game-btns"></div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let currentSq = 1;
+        let mentor = "None";
+        let mikiSolved = false;
+        const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+
+        function playTone(f, type, d, v) {
+            const o = audioCtx.createOscillator();
+            const g = audioCtx.createGain();
+            o.type = type; o.frequency.setValueAtTime(f, audioCtx.currentTime);
+            g.gain.setValueAtTime(v, audioCtx.currentTime);
+            g.gain.exponentialRampToValueAtTime(0.0001, audioCtx.currentTime + d);
+            o.connect(g); g.connect(audioCtx.destination);
+            o.start(); o.stop(audioCtx.currentTime + d);
+        }
+
+        const sounds = {
+            alert: () => playTone(349.23, 'triangle', 0.5, 0.08),
+            success: () => { playTone(523.25, 'sine', 0.4, 0.1); setTimeout(() => playTone(659.25, 'sine', 0.4, 0.1), 100); },
+            finale: () => { [440, 554, 659, 880].forEach((f, i) => setTimeout(() => playTone(f, 'sine', 1.5, 0.06), i * 150)); }
+        };
+
+        const archiveMessages = {
+            1: "HANS: 'The first step is always the most formal. Does one lift the pinkie when drinking Earl Grey?'",
+            2: "HANS: 'Elegance begins with the spine. Stand tall.'",
+            3: "QUOTE: 'To thine own self be true.' — Shakespeare",
+            4: "DECODER: 'Scanning... Hans has archived 4,000 ways to fold a napkin.'",
+            5: "HANS: 'Punctuality is a silent form of respect.'",
+            6: "MIKI: 'Hans is busy. Want to see some raw code?'",
+            7: "QUOTE: 'The course of true love never did run smooth.' — Shakespeare",
+            8: "MIKI: 'If you listen, the Archive hums in iambic pentameter.'",
+            9: "DECODER: [PING] Crossroads ahead. Sibling signatures detected.",
+            10: "CROSSROADS: Four paths. Four mentors. One Archive.",
+            11: "MIKI: 'Watch square 13. Star is brewing something intense.'",
+            12: "QUOTE: 'Brevity is the soul of wit.' — Shakespeare",
+            13: "STAR: 'Starlight is just ancient data. Welcome to the cafe.'",
+            14: "STAR: 'The space between stars is where the truth hides.'",
+            15: "HANS: 'Knowing when to be silent is the ultimate refinement.'",
+            16: "RIDDLE: MIKI: 'Emergency! What must Hans never let his tea become?'",
+            17: "MIKI: 'Data stabilized. You're a natural at this crossover stuff.'",
+            18: "MILO: 'The roots run deeper than the servers. Can you feel it?'",
+            19: "QUOTE: 'All the world's a stage.' — Shakespeare",
+            20: "MILO: 'Even the digital needs earth to ground it.'",
+            21: "DECODER: 'Frequencies merging. The Archive is pulsing.'",
+            22: "HANS: 'Redemption is a more graceful recovery from a fall.'",
+            23: "MIKI: 'Core access granted. The evolution is starting.'",
+            24: "QUOTE: 'Our remedies oft in ourselves do lie.' — Shakespeare",
+            25: "THE CORE: The cycle is ready to resolve. Will you Redeem or Delete?"
+        };
+
+        function begin() {
+            document.getElementById('saga-overlay').style.opacity = '0';
+            setTimeout(() => {
+                document.getElementById('saga-overlay').style.display = 'none';
+                document.getElementById('game-container').style.display = 'flex';
+                setTimeout(() => document.getElementById('game-container').style.opacity = '1', 100);
+                if (audioCtx.state === 'suspended') audioCtx.resume();
+                resetGame();
+            }, 2500);
+        }
+
+        function createBoard() {
+            const board = document.getElementById('game-board'); board.innerHTML = "";
+            for(let i=1; i<=25; i++) {
+                const div = document.createElement('div');
+                div.className = 'tile'; div.id = `sq-${i}`; div.innerText = i;
+                board.appendChild(div);
+            }
+        }
+
+        function resetGame() {
+            currentSq = 1; mentor = "None"; mikiSolved = false;
+            createBoard(); updateUI();
+        }
+
+        function move(n) {
+            document.getElementById(`sq-${currentSq}`).classList.add('visited');
+            currentSq = Math.max(1, Math.min(25, currentSq + n));
+            updateUI();
+        }
+
+        function updateUI() {
+            document.querySelectorAll('.tile').forEach(t => t.classList.remove('active'));
+            document.getElementById(`sq-${currentSq}`).classList.add('active');
+            const text = document.getElementById('game-text');
+            const btns = document.getElementById('game-btns');
+
+            if (currentSq === 1) {
+                text.innerText = archiveMessages[1];
+                btns.innerHTML = `<button class="game-btn" onclick="sounds.alert(); alert('Hans: Good heavens, no.')">YES</button><button class="game-btn" onclick="sounds.success(); move(1)">NO</button>`;
+            } else if (currentSq === 10 && mentor === "None") {
+                sounds.alert();
+                text.innerText = archiveMessages[10];
+                btns.innerHTML = `<button class="game-btn" onclick="setM('Hans')">HANS</button><button class="game-btn" onclick="setM('Miki')">MIKI</button><button class="game-btn" onclick="setM('Star')">STAR</button><button class="game-btn" onclick="setM('Milo')">MILO</button>`;
+            } else if (currentSq === 16 && !mikiSolved) {
+                text.innerText = archiveMessages[16];
+                btns.innerHTML = `<input type="text" id="ans" placeholder="..."><button class="game-btn" onclick="check()">DECRYPT</button>`;
+            } else if (currentSq === 25) {
+                text.innerText = archiveMessages[25];
+                btns.innerHTML = `<button class="game-btn" style="color:#ff4500" onclick="end('Redeem')">REDEEM</button><button class="game-btn" onclick="end('Delete')">DELETE</button>`;
+            } else {
+                text.innerText = archiveMessages[currentSq] || `Square ${currentSq}: Moving...`;
+                btns.innerHTML = `<button class="game-btn" onclick="move(1)">FORWARD</button><button class="game-btn" onclick="move(-1)">BACK</button>`;
+            }
+        }
+
+        function setM(m) { mentor = m; sounds.success(); move(1); }
+        function check() { if(document.getElementById('ans').value.toLowerCase() === 'cold') { mikiSolved = true; sounds.success(); move(1); } }
+
+        function end(c) {
+            if(c === 'Redeem') sounds.finale();
+            const gc = document.getElementById('game-container');
+            const so = document.getElementById('saga-overlay');
+            
+            document.getElementById('game-text').innerText = c === 'Redeem' ? "Transitioning to Mastery..." : "Transitioning to Reset...";
+            document.getElementById('game-btns').innerHTML = "";
+
+            setTimeout(() => {
+                gc.style.opacity = '0';
+                setTimeout(() => {
+                    gc.style.display = 'none';
+                    so.style.display = 'flex';
+                    so.style.opacity = '1';
+                    document.getElementById('intro-para').innerText = "The cycle has been fulfilled. The Archivist returns to the beginning, wiser for the journey.";
+                }, 2000);
+            }, 2000);
+        }
+
+        createBoard();
+    </script>
+</body>
+</html>
