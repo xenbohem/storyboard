@@ -1,0 +1,229 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>The Archive Maze | The Four Mentors</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Cinzel+Decorative:wght@700&family=Klee+One:wght@400;600&display=swap');
+
+        :root {
+            --bg: #0d0415;
+            --gold: #d4af37;
+            --miki-neon: #ccff00;
+            --star-green: #afe1af;
+            --milo-brown: #d2b48c;
+            --tile: rgba(255, 255, 255, 0.05);
+        }
+
+        body {
+            background-color: var(--bg);
+            color: #fff;
+            font-family: 'Klee One', cursive;
+            margin: 0; display: flex; flex-direction: column; height: 100vh; overflow: hidden;
+        }
+
+        #status-bar {
+            background: #000; padding: 10px 40px;
+            display: flex; justify-content: space-between;
+            border-bottom: 2px solid var(--gold);
+            font-family: 'Cinzel Decorative'; color: var(--gold); font-size: 0.8rem;
+        }
+
+        .dashboard {
+            display: flex; flex: 1; padding: 20px; gap: 40px;
+            align-items: center; justify-content: center;
+        }
+
+        #game-board {
+            display: grid; grid-template-columns: repeat(5, 80px);
+            gap: 10px; padding: 15px; background: rgba(0,0,0,0.4);
+            border-radius: 12px; border: 1px solid rgba(212, 175, 55, 0.3);
+        }
+
+        .tile {
+            width: 80px; height: 80px; background: var(--tile);
+            border: 1px solid rgba(255,255,255,0.1);
+            display: flex; align-items: center; justify-content: center;
+            font-size: 1rem; color: rgba(255,255,255,0.2);
+            border-radius: 8px; transition: all 0.4s ease;
+        }
+
+        .tile.active { background: var(--gold); color: #000; box-shadow: 0 0 25px var(--gold); font-weight: 600; }
+        .tile.visited { border-color: rgba(255, 255, 255, 0.4); }
+        .tile.glitch { border: 2px solid var(--miki-neon); }
+        .tile.star { border: 2px solid var(--star-green); }
+        .tile.milo { border: 2px solid var(--milo-brown); }
+
+        .controls-container { flex: 1; max-width: 450px; display: flex; flex-direction: column; gap: 10px; }
+
+        #message-box {
+            background: rgba(20, 10, 30, 0.95); border: 1px solid var(--gold);
+            padding: 25px; border-radius: 12px; min-height: 280px; 
+            display: flex; flex-direction: column; justify-content: center;
+        }
+
+        .game-btn {
+            background: transparent; border: 1px solid var(--gold);
+            color: var(--gold); padding: 8px 12px; cursor: pointer;
+            font-family: 'Klee One'; font-weight: 600; transition: 0.3s;
+            border-radius: 5px; margin: 4px; font-size: 0.8rem;
+        }
+        
+        .game-btn:hover { background: var(--gold); color: #000; }
+        .miki-btn { border-color: var(--miki-neon); color: var(--miki-neon); }
+        .star-btn { border-color: var(--star-green); color: var(--star-green); }
+        .milo-btn { border-color: var(--milo-brown); color: var(--milo-brown); }
+
+        input { background: #000; border: 1px solid var(--miki-neon); color: var(--miki-neon); padding: 8px; width: 80%; align-self: center; margin-top: 10px; font-family: 'Klee One';}
+    </style>
+</head>
+<body>
+
+    <div id="status-bar">
+        <span id="stat-mentor">MENTOR: UNKNOWN</span>
+        <span id="stat-inv">INVENTORY: DECODER [IDLE]</span>
+    </div>
+
+    <div class="dashboard">
+        <div id="game-board"></div>
+
+        <div class="controls-container">
+            <button class="game-btn" onclick="resetGame()">REBOOT ARCHIVE</button>
+            <button class="game-btn" style="border-color:#6495ed; color:#6495ed" onclick="checkProgress()">📊 VIEW PROGRESS</button>
+            
+            <div id="message-box">
+                <p id="game-text">System offline. Reboot to engage mentors.</p>
+                <div id="game-btns"></div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let currentSq = 1;
+        let mentor = "None";
+        let mikiSolved = false;
+        let hasFragment = false;
+        let visitedCount = new Set();
+        const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+
+        function playTone(freq, type, duration, vol) {
+            const osc = audioCtx.createOscillator();
+            const gain = audioCtx.createGain();
+            osc.type = type; osc.frequency.setValueAtTime(freq, audioCtx.currentTime);
+            gain.gain.setValueAtTime(vol, audioCtx.currentTime);
+            gain.gain.exponentialRampToValueAtTime(0.0001, audioCtx.currentTime + duration);
+            osc.connect(gain); gain.connect(audioCtx.destination);
+            osc.start(); osc.stop(audioCtx.currentTime + duration);
+        }
+
+        const sounds = {
+            ping: () => playTone(349.23, 'triangle', 0.4, 0.08),
+            success: () => { playTone(523.25, 'sine', 0.4, 0.1); setTimeout(() => playTone(659.25, 'sine', 0.4, 0.1), 100); }
+        };
+
+        const archiveMessages = {
+            2: "HANS: 'The silence between words is where the Archive breathes.'",
+            3: "DECODER: [STATUS] All parameters within acceptable margins.",
+            4: "QUOTE: 'To thine own self be true.' — Shakespeare",
+            5: "HANS: 'A gentleman never checks his watch while others are speaking.'",
+            6: "MIKI: 'Check the heat on that GPU... or is it just Hans being grumpy?'",
+            7: "QUOTE: 'The course of true love never did run smooth.' — Shakespeare",
+            8: "HANS: 'A proper letter is written in ink, never graphite.'",
+            9: "DECODER: [ALERT] Crossroads detected at Square 10.",
+            11: "MIKI: 'Data packets are humming. Someone is watching Square 13.'",
+            12: "QUOTE: 'Brevity is the soul of wit.' — Shakespeare",
+            14: "STAR: 'The scent of lavender and dark roast lingers here.'",
+            15: "HANS: 'Elegance is not being noticed, but being remembered.'",
+            17: "DECODER: 'Residual shadow traces detected. Did something leak?'",
+            19: "QUOTE: 'All the world's a stage.' — Shakespeare",
+            20: "MILO: 'The roots run deeper than the code, seeker.'",
+        };
+
+        function createBoard() {
+            const board = document.getElementById('game-board'); board.innerHTML = "";
+            for(let i=1; i<=25; i++) {
+                const div = document.createElement('div');
+                div.className = 'tile'; div.id = `sq-${i}`; div.innerText = i;
+                if(i===13) div.classList.add('star');
+                if(i===18) div.classList.add('milo');
+                board.appendChild(div);
+            }
+        }
+
+        function resetGame() {
+            if (audioCtx.state === 'suspended') audioCtx.resume();
+            currentSq = 1; mentor = "None"; mikiSolved = false; hasFragment = false;
+            visitedCount.clear(); document.getElementById('stat-mentor').innerText = "MENTOR: UNKNOWN";
+            createBoard(); updateUI();
+        }
+
+        function move(n) {
+            visitedCount.add(currentSq);
+            document.getElementById(`sq-${currentSq}`).classList.add('visited');
+            currentSq = Math.max(1, Math.min(25, currentSq + n));
+            updateUI();
+        }
+
+        function updateUI() {
+            document.querySelectorAll('.tile').forEach(t => t.classList.remove('active'));
+            document.getElementById(`sq-${currentSq}`).classList.add('active');
+            const text = document.getElementById('game-text');
+            const btns = document.getElementById('game-btns');
+
+            if (currentSq === 1) {
+                text.innerText = "HANS: 'Tell me, seeker: does one lift the pinkie finger when drinking Earl Grey?'";
+                btns.innerHTML = `<button class="game-btn" onclick="alert('Hans sighs: Incorrect.')">YES</button><button class="game-btn" onclick="sounds.success(); move(1)">NO</button>`;
+            } 
+            else if (currentSq === 10 && mentor === "None") {
+                sounds.ping();
+                text.innerText = "HANS: 'Choose your guidance carefully. Each mentor sees a different Archive.'";
+                btns.innerHTML = `
+                    <button class="game-btn" onclick="setMentor('Hans')">HANS</button>
+                    <button class="game-btn miki-btn" onclick="setMentor('Miki')">MIKI</button>
+                    <button class="game-btn star-btn" onclick="setMentor('Star')">STAR</button>
+                    <button class="game-btn milo-btn" onclick="setMentor('Milo')">MILO</button>
+                `;
+            }
+            else if (currentSq === 13) {
+                text.innerText = hasFragment ? "STAR: 'Is that a Shadow Fragment? You have been busy. Ready to brew some magic?'" : "STAR: 'Welcome to the Astral Cafe. The coffee is bitter, but the truth is sweet.'";
+                btns.innerHTML = `<button class="game-btn star-btn" onclick="window.open('https://your-star-link.com')">VISIT STAR</button><button class="game-btn" onclick="move(1)">PROCEED</button>`;
+            }
+            else if (currentSq === 16 && mentor === "Miki" && !mikiSolved) {
+                text.innerText = "DECODER: [BREACH] Enter the code (Hans's hated tea temperature):";
+                btns.innerHTML = `<input type="text" id="ans"><button class="game-btn miki-btn" onclick="solveMiki()">DECRYPT</button>`;
+            }
+            else if (currentSq === 18) {
+                text.innerText = "MILO: 'Careful where you step. The data-roots are fragile. Would you like to study the Living Archive?'";
+                btns.innerHTML = `<button class="game-btn milo-btn" onclick="setMentor('Milo')">JOIN MILO</button><button class="game-btn" onclick="move(1)">FORWARD</button>`;
+            }
+            else {
+                text.innerText = archiveMessages[currentSq] || `Square ${currentSq}: Moving through the Archive...`;
+                btns.innerHTML = `<button class="game-btn" onclick="move(1)">FORWARD</button><button class="game-btn" onclick="move(-1)">BACK</button>`;
+            }
+        }
+
+        function setMentor(m) {
+            sounds.success(); mentor = m;
+            document.getElementById('stat-mentor').innerText = `MENTOR: ${m.toUpperCase()}`;
+            if(m === 'Miki') document.getElementById('sq-16').classList.add('glitch');
+            move(1);
+        }
+
+        function solveMiki() {
+            if(document.getElementById('ans').value.toLowerCase() === 'cold') {
+                sounds.success(); mikiSolved = true; hasFragment = true;
+                document.getElementById('stat-inv').innerText = "INVENTORY: DECODER, FRAGMENT";
+                document.getElementById('sq-16').classList.remove('glitch');
+                move(1);
+            }
+        }
+
+        function checkProgress() {
+            alert(`PROGRESS LOG:\n- Explored: ${Math.round((visitedCount.size/25)*100)}%\n- Active Mentor: ${mentor}\n- Fragment Found: ${hasFragment ? 'YES' : 'NO'}`);
+        }
+
+        createBoard();
+    </script>
+</body>
+</html>
